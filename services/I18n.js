@@ -16,6 +16,8 @@ export const dictionaries = {
         "language.switch": "ភាសាខ្មែរ",
         "language.switchShort": "ខ្មែរ",
         "language.switchLang": "km",
+        "theme.dark": "Switch to dark theme",
+        "theme.light": "Switch to light theme",
 
         "menu.greeting": "What would you like today?",
         "menu.search": "Search the menu",
@@ -101,6 +103,8 @@ export const dictionaries = {
         "language.switch": "English",
         "language.switchShort": "EN",
         "language.switchLang": "en",
+        "theme.dark": "ប្តូរទៅផ្ទៃងងឹត",
+        "theme.light": "ប្តូរទៅផ្ទៃភ្លឺ",
 
         "menu.greeting": "តើអ្នកចង់ពិសាអ្វីថ្ងៃនេះ?",
         "menu.search": "ស្វែងរកក្នុងម៉ឺនុយ",
