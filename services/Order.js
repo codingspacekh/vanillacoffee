@@ -1,4 +1,5 @@
 import { getProductById } from "./Menu.js";
+import { nextOrderNumber } from "./Store.js";
 
 export async function addToCart(id) {
     const product = await getProductById(id);
@@ -20,4 +21,21 @@ export function removeFromCart(id) {
 
 export function cartTotal(cart) {
     return cart.reduce((total, item) => total + item.quantity * item.product.price, 0);
+}
+
+export function clearCart() {
+    app.store.cart = [];
+}
+
+export function placeOrder(customer) {
+    // A real shop would send the order to a server here
+    const order = {
+        number: nextOrderNumber(),
+        customer: { ...customer },
+        items: app.store.cart,
+        total: cartTotal(app.store.cart),
+    };
+    app.store.lastOrder = order;
+    clearCart();
+    return order;
 }

@@ -8,6 +8,7 @@ import "./components/ProductItem.js";
 import "./components/DetailsPage.js";
 import "./components/OrderPage.js";
 import "./components/CartItem.js";
+import "./components/ConfirmationPage.js";
 
 window.app = {};
 app.store = Store;

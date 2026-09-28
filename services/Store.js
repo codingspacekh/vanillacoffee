@@ -3,7 +3,15 @@
 const Store = {
     menu: null,
     cart: [],
+    lastOrder: null,
 };
+
+let lastOrderNumber = 1000;
+
+export function nextOrderNumber() {
+    lastOrderNumber += 1;
+    return lastOrderNumber;
+}
 
 const proxiedStore = new Proxy(Store, {
     set(target, property, value) {
