@@ -65,3 +65,10 @@ window.addEventListener("applanguagechange", () => {
     updateThemeButton();
     app.router.go(location.pathname, false);
 });
+
+// Offline support: the service worker caches the app after the first visit
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/serviceworker.js");
+    });
+}
