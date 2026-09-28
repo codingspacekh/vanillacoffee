@@ -9,7 +9,7 @@ export class ConfirmationPage extends HTMLElement {
         this.root = this.attachShadow({ mode: "open" });
         const template = document.getElementById("confirmation-page-template");
         this.root.appendChild(template.content.cloneNode(true));
-        adoptStyles(this.root, "/components/shared.css", "/components/ConfirmationPage.css");
+        adoptStyles(this.root, "/styles/shared.css", "/styles/ConfirmationPage.css");
 
         this.root.querySelector("a.back").addEventListener("click", event => {
             event.preventDefault();

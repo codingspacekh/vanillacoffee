@@ -8,7 +8,7 @@ export class OrdersPage extends HTMLElement {
         super();
         this.root = this.attachShadow({ mode: "open" });
         this.root.appendChild(document.createElement("section"));
-        adoptStyles(this.root, "/components/shared.css", "/components/OrdersPage.css");
+        adoptStyles(this.root, "/styles/shared.css", "/styles/OrdersPage.css");
 
         this.root.addEventListener("click", async event => {
             if (event.target.closest("a.back")) {

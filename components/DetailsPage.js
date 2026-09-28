@@ -14,7 +14,7 @@ export class DetailsPage extends HTMLElement {
         const template = document.getElementById("details-page-template");
         const content = template.content.cloneNode(true);
         this.root.appendChild(content);    
-        adoptStyles(this.root, "/components/shared.css", "/components/DetailsPage.css");
+        adoptStyles(this.root, "/styles/shared.css", "/styles/DetailsPage.css");
 
         this.form = this.root.querySelector("form.options");
         this.form.addEventListener("change", () => this.renderPrice());

@@ -50,7 +50,7 @@ export class OrderPage extends HTMLElement {
         this.root = this.attachShadow({ mode: "open" });    
         const section = document.createElement("section");
         this.root.appendChild(section);
-        adoptStyles(this.root, "/components/shared.css", "/components/OrderPage.css");
+        adoptStyles(this.root, "/styles/shared.css", "/styles/OrderPage.css");
         this.onCartChange = () => this.render();
         this.root.addEventListener("click", event => {
             if (event.target.closest("a.button")) {

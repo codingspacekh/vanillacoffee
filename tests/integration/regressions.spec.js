@@ -115,9 +115,9 @@ test.describe("small screen", () => {
     });
 });
 
-test("component stylesheets are downloaded once", async ({ page }) => {
+test("stylesheets are downloaded once", async ({ page }) => {
     const cssRequests = [];
-    page.on("request", r => { if (r.url().includes("/components/")) cssRequests.push(new URL(r.url()).pathname); });
+    page.on("request", r => { if (r.url().includes("/styles/")) cssRequests.push(new URL(r.url()).pathname); });
     await page.goto("/");
     await expect(menu(page).locator("product-item").first()).toBeVisible();
     await menu(page).locator("product-item h4").first().click();
@@ -130,10 +130,11 @@ test("component stylesheets are downloaded once", async ({ page }) => {
     await expect(details(page).locator("h2")).toHaveText("Black Americano");
     await expect.poll(() => cssRequests.length).toBeGreaterThan(0);
     expect(cssRequests.filter(u => u.endsWith(".css")).sort()).toEqual([
-        "/components/DetailsPage.css",
-        "/components/MenuPage.css",
-        "/components/OrderPage.css",
-        "/components/shared.css",
+        "/styles/DetailsPage.css",
+        "/styles/MenuPage.css",
+        "/styles/OrderPage.css",
+        "/styles/global.css",
+        "/styles/shared.css",
     ]);
 });
 
