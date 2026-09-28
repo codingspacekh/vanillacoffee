@@ -118,7 +118,7 @@ test.describe("Order page", () => {
         });
         await order(page).getByRole("button", { name: "Place Order" }).click();
         await expect.poll(() => message).toBe("Thanks for your order Alex.");
-        await expect(order(page).locator("input[name=name]")).toHaveValue("");
+        await expect(order(page).locator(".empty")).toHaveText("Your order is empty");
     });
 });
 

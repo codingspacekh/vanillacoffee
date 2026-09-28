@@ -1,7 +1,21 @@
 import API from "./API.js";
 
-export async function loadData() {    
-    app.store.menu = await API.fetchMenu();
+let loading = null;
+
+// Shares one request between concurrent callers
+export function loadData() {
+    if (!loading) {
+        loading = API.fetchMenu()
+            .then(menu => {
+                app.store.menu = menu;
+                return menu;
+            })
+            .catch(error => {
+                loading = null;
+                throw error;
+            });
+    }
+    return loading;
 }
 
 export async function getProductById(id) {

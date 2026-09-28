@@ -1,32 +1,41 @@
+import { adoptStyles } from "../services/Styles.js";
+import { clearCart } from "../services/Order.js";
+
 export class OrderPage extends HTMLElement {
 
-    #user = {
+    // Double data binding: writing a field also updates the form on screen
+    #user = new Proxy({
         name: "",
         phone: "",
         email: ""
-    }
+    }, {
+        set: (target, property, value) => {
+            target[property] = value;
+            const form = this.root.querySelector("form");
+            if (form) {
+                form.elements[property].value = value;
+            }
+            return true;
+        }
+    });
 
     constructor() {
         super();
     
         this.root = this.attachShadow({ mode: "open" });    
-        const styles = document.createElement("style");
-        this.root.appendChild(styles);
         const section = document.createElement("section");
         this.root.appendChild(section);
-  
-        async function loadCSS() {
-          const request = await fetch("/components/OrderPage.css");
-          styles.textContent = await request.text();
-        }
-        loadCSS();
+        adoptStyles(this.root, "/components/OrderPage.css");
+        this.onCartChange = () => this.render();
     }   
   
     connectedCallback() {
-      window.addEventListener("appcartchange", () => {
-        this.render();
-      })
+      window.addEventListener("appcartchange", this.onCartChange);
       this.render();
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener("appcartchange", this.onCartChange);
     }
   
     render() {        
@@ -48,20 +57,21 @@ export class OrderPage extends HTMLElement {
         const content = template.content.cloneNode(true);
         section.appendChild(content);
   
+        const list = this.root.querySelector("ul");
         let total = 0;
         for (let prodInCart of app.store.cart) {      
             const item = document.createElement("cart-item");
-              item.dataset.item = JSON.stringify(prodInCart);
-            this.root.querySelector("ul").appendChild(item);
+            item.dataset.item = JSON.stringify(prodInCart);
+            list.appendChild(item);
           
             total += prodInCart.quantity * prodInCart.product.price;
         }
-        this.root.querySelector("ul").innerHTML += `
+        list.insertAdjacentHTML("beforeend", `
               <li>
                   <p class='total'>Total</p>
                   <p class='price-total'>$${total.toFixed(2)}</p>
               </li>                
-          `;            
+          `);            
       }
 
       this.setFormBindings(this.root.querySelector("form"));
@@ -78,20 +88,17 @@ export class OrderPage extends HTMLElement {
                 this.#user.email = "";
                 this.#user.phone = "";
                 // TODO Send the data to the server
+                clearCart();
             })
 
-            // Set double data binding
-            this.#user = new Proxy(this.#user, {
-                set(target, property, value) {
-                    target[property] = value;
-                    form.elements[property].value = value;
-                    return true;
-                }
-            });
             Array.from(form.elements).forEach( element => {
-                element.addEventListener("change", event => {
-                    this.#user[element.name] = element.value;
-                })
+                if (element.name) {
+                    // Restore what the user already typed before this render
+                    element.value = this.#user[element.name];
+                    element.addEventListener("change", () => {
+                        this.#user[element.name] = element.value;
+                    })
+                }
             })
         }
     }

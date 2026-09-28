@@ -3,18 +3,18 @@ const Router = {
         document.querySelectorAll("a.navlink").forEach(a => {
             a.addEventListener("click", event => {
                 event.preventDefault();
-                // const url1 = event.target.href;
-                const url = event.target.getAttribute("href");
+                const url = event.currentTarget.getAttribute("href");
                 Router.go(url);
             });
         })
         // Event Handler for URL changes
         window.addEventListener("popstate", event => {
-            Router.go(event.state.route, false);
+            Router.go(event.state?.route ?? location.pathname, false);
         });
 
-        // Check the initial URL
-        Router.go(location.pathname);
+        // Check the initial URL, recording it on the current history entry
+        history.replaceState({ route: location.pathname }, '', location.pathname);
+        Router.go(location.pathname, false);
     },
     go: (route, addToHistory=true) => {
         console.log(`Going to ${route}`);
@@ -38,12 +38,10 @@ const Router = {
                 }
         }
         if (pageElement) {
-            // document.querySelector("main").children[0].remove();
             const cache = document.querySelector("main");
             cache.innerHTML = "";
             cache.appendChild(pageElement);
-            window.scrollX = 0;
-            window.scrollY = 0;
+            window.scrollTo(0, 0);
 
         } else {
             // 404
