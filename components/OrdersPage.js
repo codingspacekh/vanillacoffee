@@ -1,8 +1,7 @@
 import { adoptStyles } from "../services/Styles.js";
 import { describeOptions } from "../services/Options.js";
 import { reorder } from "../services/Order.js";
-
-const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" });
+import { formatDate, localized, t } from "../services/I18n.js";
 
 export class OrdersPage extends HTMLElement {
     constructor() {
@@ -33,13 +32,16 @@ export class OrdersPage extends HTMLElement {
         const section = this.root.querySelector("section");
         if (app.store.orders.length == 0) {
             section.innerHTML = `
-                <p class="empty">No past orders yet</p>
-                <a href="/" class="back">Back to menu</a>
+                <p class="empty"></p>
+                <a href="/" class="back"></a>
             `;
+            section.querySelector(".empty").textContent = t("orders.empty");
+            section.querySelector(".back").textContent = t("common.backToMenu");
             return;
         }
 
-        section.innerHTML = `<h2>Order history</h2>`;
+        section.innerHTML = `<h2></h2>`;
+        section.querySelector("h2").textContent = t("orders.title");
         for (const order of app.store.orders) {
             const article = document.createElement("article");
             article.innerHTML = `
@@ -50,23 +52,24 @@ export class OrdersPage extends HTMLElement {
                 <p class="items"></p>
                 <footer>
                     <p class="total"></p>
-                    <button type="button" class="reorder">Reorder</button>
+                    <button type="button" class="reorder"></button>
                 </footer>
             `;
-            article.querySelector(".number").textContent = `Order #${order.number}`;
+            article.querySelector(".number").textContent = t("confirmation.number", { number: order.number });
             const time = article.querySelector("time");
             if (order.placedAt) {
                 time.dateTime = order.placedAt;
-                time.textContent = dateFormat.format(new Date(order.placedAt));
+                time.textContent = formatDate(new Date(order.placedAt));
             }
             article.querySelector(".items").textContent = order.items.map(item => {
                 const options = describeOptions(item.product, item.options);
-                return `${item.quantity}x ${item.product.name}${options ? ` (${options})` : ""}`;
+                return `${item.quantity}x ${localized(item.product)}${options ? ` (${options})` : ""}`;
             }).join(", ");
             article.querySelector(".total").textContent = `$${order.total.toFixed(2)}`;
             const button = article.querySelector("button.reorder");
             button.dataset.number = order.number;
-            button.setAttribute("aria-label", `Reorder order #${order.number}`);
+            button.textContent = t("orders.reorder");
+            button.setAttribute("aria-label", t("orders.reorderLabel", { number: order.number }));
             section.appendChild(article);
         }
     }

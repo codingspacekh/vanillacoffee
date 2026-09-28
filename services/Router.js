@@ -1,3 +1,5 @@
+import { t } from "./I18n.js";
+
 const Router = {
     init: () => {
         document.querySelectorAll("a.navlink").forEach(a => {
@@ -51,7 +53,7 @@ const Router = {
 
         } else {
             // 404
-            document.querySelector("main").innerHTML = "Oups, 404!"
+            document.querySelector("main").textContent = t("notFound")
 
         }
     }

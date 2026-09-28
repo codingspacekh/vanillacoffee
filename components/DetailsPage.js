@@ -2,6 +2,7 @@ import { getProductById } from '../services/Menu.js';
 import { addToCart } from '../services/Order.js';
 import { unitPrice } from '../services/Options.js';
 import { adoptStyles } from '../services/Styles.js';
+import { localized, t } from '../services/I18n.js';
 
 export class DetailsPage extends HTMLElement {
 
@@ -29,14 +30,14 @@ export class DetailsPage extends HTMLElement {
 
     renderPrice() {
         const price = unitPrice(this.product, this.selectedOptions());
-        this.root.querySelector(".price").textContent = `$ ${price.toFixed(2)} ea`
+        this.root.querySelector(".price").textContent = t("details.price", { price: price.toFixed(2) });
     }
 
     renderOptions() {
         for (const group of this.product.options ?? []) {
             const fieldset = document.createElement("fieldset");
             const legend = document.createElement("legend");
-            legend.textContent = group.name;
+            legend.textContent = t(`option.${group.name}`);
             fieldset.appendChild(legend);
 
             group.choices.forEach((choice, index) => {
@@ -46,7 +47,7 @@ export class DetailsPage extends HTMLElement {
                 input.name = group.name;
                 input.value = choice.label;
                 input.checked = index == 0;
-                label.append(input, ` ${choice.label}`);
+                label.append(input, ` ${t(`choice.${choice.label}`)}`);
                 if (choice.price > 0) {
                     const extra = document.createElement("span");
                     extra.className = "extra";
@@ -62,15 +63,15 @@ export class DetailsPage extends HTMLElement {
     async renderData() {
         this.product = await getProductById(this.dataset.productId);
         if (!this.product) {
-            this.root.querySelector("h2").textContent = "Product not found";
+            this.root.querySelector("h2").textContent = t("details.notFound");
             for (const selector of ["img", ".description", "form.options", ".price", "button"]) {
                 this.root.querySelector(selector).remove();
             }
             return;
         }
-        this.root.querySelector("h2").textContent = this.product.name;
+        this.root.querySelector("h2").textContent = localized(this.product);
         this.root.querySelector("img").src = `/data/images/${this.product.image}`;
-        this.root.querySelector(".description").textContent = this.product.description;
+        this.root.querySelector(".description").textContent = localized(this.product, "description");
         this.renderOptions();
         this.renderPrice();
     }

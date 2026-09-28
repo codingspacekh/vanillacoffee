@@ -1,30 +1,35 @@
 import { adoptStyles } from "../services/Styles.js";
 import { cartTotal, placeOrder } from "../services/Order.js";
+import { t } from "../services/I18n.js";
 
 // Each returns an error message, or "" when the field is valid
 const validators = {
-    name: input => input.value.trim() ? "" : "Please enter your name",
+    name: input => input.value.trim() ? "" : t("order.error.name"),
     phone: input => {
         const value = input.value.trim();
         if (!value) {
-            return "Please enter your phone number";
+            return t("order.error.phoneMissing");
         }
         const digits = value.replace(/\D/g, "").length;
         return /^\+?[\d\s-]+$/.test(value) && digits >= 7 && digits <= 15
             ? ""
-            : "Please enter a valid phone number";
+            : t("order.error.phoneInvalid");
     },
-    email: input => input.validity.typeMismatch ? "Please enter a valid email address" : "",
+    email: input => input.validity.typeMismatch ? t("order.error.email") : "",
+};
+
+// What the customer has typed so far. It outlives the page element, so the
+// details survive switching language or visiting the menu and coming back.
+const draft = {
+    name: "",
+    phone: "",
+    email: ""
 };
 
 export class OrderPage extends HTMLElement {
 
     // Double data binding: writing a field also updates the form on screen
-    #user = new Proxy({
-        name: "",
-        phone: "",
-        email: ""
-    }, {
+    #user = new Proxy(draft, {
         set: (target, property, value) => {
             target[property] = value;
             const form = this.root.querySelector("form");
@@ -59,11 +64,11 @@ export class OrderPage extends HTMLElement {
       let section = this.root.querySelector("section");   
       if (app.store.cart.length==0) {     
         section.innerHTML = `
-            <p class="empty">Your order is empty</p>
+            <p class="empty">${t("order.empty")}</p>
         `;
       } else {
         let html = `
-            <h2>Your Order</h2>
+            <h2>${t("order.title")}</h2>
             <ul>
             </ul>
         `;
@@ -82,7 +87,7 @@ export class OrderPage extends HTMLElement {
         const total = cartTotal(app.store.cart);
         list.insertAdjacentHTML("beforeend", `
               <li>
-                  <p class='total'>Total</p>
+                  <p class='total'>${t("order.total")}</p>
                   <p class='price-total'>$${total.toFixed(2)}</p>
               </li>                
           `);            
