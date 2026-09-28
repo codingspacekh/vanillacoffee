@@ -6,6 +6,8 @@ import Router from "./services/Router.js";
 import "./components/MenuPage.js";
 import "./components/ProductItem.js";
 import "./components/DetailsPage.js";
+import "./components/OrderPage.js";
+import "./components/CartItem.js";
 
 window.app = {};
 app.store = Store;
@@ -16,3 +18,13 @@ window.addEventListener("DOMContentLoaded", () => {
     loadData();
     app.router.init();
 });
+
+// The cart tab's badge shows how many items are in the cart
+function updateBadge() {
+    const badge = document.getElementById("badge");
+    const quantity = app.store.cart.reduce((total, item) => total + item.quantity, 0);
+    badge.textContent = quantity;
+    badge.hidden = quantity == 0;
+}
+
+window.addEventListener("appcartchange", updateBadge);

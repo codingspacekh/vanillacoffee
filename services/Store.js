@@ -2,6 +2,7 @@
 // also announces the change with an event, so views know to re-render.
 const Store = {
     menu: null,
+    cart: [],
 };
 
 const proxiedStore = new Proxy(Store, {
@@ -9,6 +10,9 @@ const proxiedStore = new Proxy(Store, {
         target[property] = value;
         if (property == "menu") {
             window.dispatchEvent(new Event("appmenuchange"));
+        }
+        if (property == "cart") {
+            window.dispatchEvent(new Event("appcartchange"));
         }
         return true;
     }

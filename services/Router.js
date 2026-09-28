@@ -25,6 +25,9 @@ const Router = {
             case "/":
                 pageElement = document.createElement("menu-page");
                 break;
+            case "/order":
+                pageElement = document.createElement("order-page");
+                break;
             default:
                 if (route.startsWith("/product-")) {
                     pageElement = document.createElement("details-page");

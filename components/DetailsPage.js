@@ -1,4 +1,5 @@
 import { getProductById } from "../services/Menu.js";
+import { addToCart } from "../services/Order.js";
 import { adoptStyles } from "../services/Styles.js";
 
 export class DetailsPage extends HTMLElement {
@@ -12,6 +13,10 @@ export class DetailsPage extends HTMLElement {
         this.root.querySelector("a.back").addEventListener("click", event => {
             event.preventDefault();
             app.router.go("/");
+        });
+        this.root.querySelector("button.add-to-cart").addEventListener("click", () => {
+            addToCart(this.product.id);
+            app.router.go("/order");
         });
     }
 
