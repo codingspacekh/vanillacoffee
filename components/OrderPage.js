@@ -1,5 +1,6 @@
 import { adoptStyles } from "../services/Styles.js";
-import { cartTotal, placeOrder } from "../services/Order.js";
+import { orderTotals, placeOrder } from "../services/Order.js";
+import { hasReward, REWARD_POINTS, rewardItem } from "../services/Loyalty.js";
 
 // Each returns an error message, or "" when the field is valid
 const validators = {
@@ -24,6 +25,9 @@ const draft = {
     phone: "",
     email: ""
 };
+
+// Whether the customer ticked "Use my free drink"; kept across re-renders
+const reward = { use: false };
 
 export class OrderPage extends HTMLElement {
     constructor() {
@@ -74,7 +78,15 @@ export class OrderPage extends HTMLElement {
             cartItem.dataset.item = JSON.stringify(item);
             list.appendChild(cartItem);
         }
-        const total = cartTotal(app.store.cart);
+        const { discount, total } = orderTotals(app.store.cart, reward.use);
+        if (discount > 0) {
+            list.insertAdjacentHTML("beforeend", `
+                <li class="reward-line">
+                    <p class="reward-label">Free drink</p>
+                    <p class="reward-amount">−$${discount.toFixed(2)}</p>
+                </li>
+            `);
+        }
         list.insertAdjacentHTML("beforeend", `
             <li>
                 <p class="total">Total</p>
@@ -82,9 +94,57 @@ export class OrderPage extends HTMLElement {
             </li>
         `);
 
+        section.appendChild(this.renderLoyalty());
         const template = document.getElementById("order-form-template");
         section.appendChild(template.content.cloneNode(true));
         this.bindForm(section.querySelector("form"));
+    }
+
+    // Points progress, and the free-drink checkbox once it can be used
+    renderLoyalty() {
+        const points = app.store.points;
+        const panel = document.createElement("section");
+        panel.className = "loyalty";
+        panel.innerHTML = `
+            <div class="loyalty-head">
+                <span class="icon" aria-hidden="true">stars</span>
+                <p class="points"></p>
+            </div>
+            <div class="progress" role="progressbar" aria-valuemin="0"><div class="fill"></div></div>
+        `;
+        panel.querySelector(".points").textContent = `${points} / ${REWARD_POINTS} points`;
+
+        const progress = Math.min(points, REWARD_POINTS);
+        const bar = panel.querySelector(".progress");
+        bar.setAttribute("aria-label", "Loyalty points");
+        bar.setAttribute("aria-valuemax", REWARD_POINTS);
+        bar.setAttribute("aria-valuenow", progress);
+        bar.querySelector(".fill").style.width = `${progress / REWARD_POINTS * 100}%`;
+
+        const drink = rewardItem(app.store.cart);
+        if (hasReward(points) && drink) {
+            const label = document.createElement("label");
+            label.className = "reward";
+            label.innerHTML = `<input type="checkbox" id="use-reward"> <span></span>`;
+            label.querySelector("span").textContent = `Use my free drink (−$${drink.unitPrice.toFixed(2)})`;
+            const checkbox = label.querySelector("input");
+            checkbox.checked = reward.use;
+            checkbox.addEventListener("change", () => {
+                reward.use = checkbox.checked;
+                this.render();
+                // render() replaced the checkbox, so focus its replacement
+                this.root.getElementById("use-reward").focus();
+            });
+            panel.appendChild(label);
+        } else {
+            const hint = document.createElement("p");
+            hint.className = "hint";
+            hint.textContent = hasReward(points)
+                ? "You have a free drink! Add a drink to use it."
+                : `${REWARD_POINTS - points} more points for a free drink`;
+            panel.appendChild(hint);
+        }
+        return panel;
     }
 
     // Shows or clears a field's error message; returns whether it is valid
@@ -111,7 +171,8 @@ export class OrderPage extends HTMLElement {
             }
             const customer = Object.fromEntries(new FormData(form));
             draft.name = draft.phone = draft.email = "";
-            placeOrder(customer);
+            placeOrder(customer, { useReward: reward.use });
+            reward.use = false;
             app.router.go("/order/confirmed");
         });
 

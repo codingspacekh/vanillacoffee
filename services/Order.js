@@ -1,6 +1,7 @@
 import { getProductById } from "./Menu.js";
 import { nextOrderNumber } from "./Store.js";
 import { createItem } from "./Options.js";
+import { pointsFor, REWARD_POINTS, rewardDiscount, roundCents } from "./Loyalty.js";
 
 const MAX_ORDERS = 50;
 
@@ -45,21 +46,37 @@ export function changeQuantity(key, delta) {
 }
 
 export function cartTotal(cart) {
-    return cart.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
+    return roundCents(cart.reduce((total, item) => total + item.quantity * item.unitPrice, 0));
+}
+
+// The cart's totals, with the free drink applied when asked for and allowed
+export function orderTotals(cart, useReward) {
+    const subtotal = cartTotal(cart);
+    const discount = useReward ? rewardDiscount(cart, app.store.points) : 0;
+    return { subtotal, discount, total: roundCents(subtotal - discount) };
 }
 
 export function clearCart() {
     app.store.cart = [];
 }
 
-export function placeOrder(customer) {
+export function placeOrder(customer, { useReward = false } = {}) {
     // A real shop would send the order to a server here
+    const { subtotal, discount, total } = orderTotals(app.store.cart, useReward);
+    const pointsUsed = discount > 0 ? REWARD_POINTS : 0;
+    const pointsEarned = pointsFor(total);
+    app.store.points = app.store.points - pointsUsed + pointsEarned;
     const order = {
         number: nextOrderNumber(),
         placedAt: new Date().toISOString(),
         customer: { ...customer },
         items: app.store.cart,
-        total: cartTotal(app.store.cart),
+        subtotal,
+        discount,
+        total,
+        pointsUsed,
+        pointsEarned,
+        pointsBalance: app.store.points,
     };
     app.store.lastOrder = order;
     app.store.orders = [order, ...app.store.orders].slice(0, MAX_ORDERS);

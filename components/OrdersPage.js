@@ -43,7 +43,8 @@ export class OrdersPage extends HTMLElement {
             return;
         }
 
-        section.innerHTML = `<div class="heading"><h2>Order history</h2></div>`;
+        section.innerHTML = `<div class="heading"><h2>Order history</h2><p class="balance"></p></div>`;
+        section.querySelector(".balance").textContent = `You have ${app.store.points} points`;
         for (const order of app.store.orders) {
             const article = document.createElement("article");
             article.innerHTML = `

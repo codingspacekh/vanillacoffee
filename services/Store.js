@@ -5,6 +5,7 @@ const LAST_ORDER_KEY = "cm-last-order";
 const ORDERS_KEY = "cm-orders";
 const ORDER_NUMBER_KEY = "cm-order-number";
 const FAVOURITES_KEY = "cm-favourites";
+const POINTS_KEY = "cm-points";
 
 // Storage can be unavailable (private browsing) or hold broken data,
 // so every read has a fallback and every write may quietly fail
@@ -39,6 +40,7 @@ function loadOrder(order) {
 
 const savedOrders = load(ORDERS_KEY, []);
 const savedFavourites = load(FAVOURITES_KEY, []);
+const savedPoints = load(POINTS_KEY, 0);
 
 // The app's state lives in one object. Setting a property on the proxy
 // saves it and announces the change with an event.
@@ -48,6 +50,7 @@ const Store = {
     lastOrder: loadOrder(load(LAST_ORDER_KEY, null)),
     orders: Array.isArray(savedOrders) ? savedOrders.map(loadOrder) : [],
     favourites: Array.isArray(savedFavourites) ? savedFavourites : [],
+    points: Number.isInteger(savedPoints) && savedPoints >= 0 ? savedPoints : 0,
 };
 
 export function nextOrderNumber() {
@@ -71,6 +74,9 @@ const proxiedStore = new Proxy(Store, {
         }
         if (property == "orders") {
             save(ORDERS_KEY, value);
+        }
+        if (property == "points") {
+            save(POINTS_KEY, value);
         }
         if (property == "favourites") {
             save(FAVOURITES_KEY, value);
