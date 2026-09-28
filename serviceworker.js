@@ -1,6 +1,6 @@
 // Bump the version whenever the precache list changes; old caches are
 // deleted when the new worker activates.
-const CACHE = "coffeemasters-v5";
+const CACHE = "coffeemasters-v6";
 
 const PRECACHE = [
     "/",
@@ -49,8 +49,7 @@ self.addEventListener("fetch", event => {
     const url = new URL(request.url);
 
     if (request.mode == "navigate") {
-        // Every route is served by index.html, cached as "/"
-        event.respondWith(networkFirst(request, "/"));
+        event.respondWith(navigate(request));
     } else if (url.origin == location.origin) {
         const isImage = url.pathname.startsWith("/data/images/") || url.pathname.startsWith("/images/");
         // Code and menu data stay fresh while online; images rarely change
@@ -60,6 +59,30 @@ self.addEventListener("fetch", event => {
         event.respondWith(cacheFirst(request));
     }
 });
+
+// Every route is served by the app shell (index.html), cached as "/".
+// Plain static hosts answer routes like /product-12 with 404 because no such
+// file exists, so on a 404 the cached shell is used and the app routes itself.
+async function navigate(request) {
+    const cache = await caches.open(CACHE);
+    try {
+        const response = await fetch(request);
+        if (response.ok) {
+            cache.put("/", response.clone());
+            return response;
+        }
+        if (response.status == 404) {
+            return await cache.match("/") ?? response;
+        }
+        return response;
+    } catch (error) {
+        const cached = await cache.match("/");
+        if (cached) {
+            return cached;
+        }
+        throw error;
+    }
+}
 
 async function networkFirst(request, cacheKey = request) {
     const cache = await caches.open(CACHE);

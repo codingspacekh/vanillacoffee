@@ -1,0 +1,5 @@
+{
+    // The app routes URLs like /product-12 itself, so Live Server must
+    // answer them with index.html instead of "Cannot GET /product-12"
+    "liveServer.settings.file": "index.html"
+}
