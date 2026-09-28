@@ -11,8 +11,9 @@ const Router = {
         window.addEventListener("popstate", event => {
             Router.go(event.state?.route ?? location.pathname, false);
         });
-        // Show the page for the URL we started on, and record it in history
-        history.replaceState({ route: location.pathname }, "", location.pathname);
+        // Show the page for the URL we started on, and record it in history.
+        // Keep the query string: the menu stores its filter there.
+        history.replaceState({ route: location.pathname }, "", location.pathname + location.search);
         Router.go(location.pathname, false);
     },
 

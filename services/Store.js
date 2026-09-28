@@ -1,6 +1,7 @@
 const CART_KEY = "cm-cart";
 const LAST_ORDER_KEY = "cm-last-order";
 const ORDER_NUMBER_KEY = "cm-order-number";
+const FAVOURITES_KEY = "cm-favourites";
 
 // Storage can be unavailable (private browsing) or hold broken data,
 // so every read has a fallback and every write may quietly fail
@@ -21,6 +22,7 @@ function save(key, value) {
 }
 
 const savedCart = load(CART_KEY, []);
+const savedFavourites = load(FAVOURITES_KEY, []);
 
 // The app's state lives in one object. Setting a property on the proxy
 // saves it and announces the change with an event.
@@ -28,6 +30,7 @@ const Store = {
     menu: null,
     cart: Array.isArray(savedCart) ? savedCart : [],
     lastOrder: load(LAST_ORDER_KEY, null),
+    favourites: Array.isArray(savedFavourites) ? savedFavourites : [],
 };
 
 export function nextOrderNumber() {
@@ -48,6 +51,10 @@ const proxiedStore = new Proxy(Store, {
         }
         if (property == "lastOrder") {
             save(LAST_ORDER_KEY, value);
+        }
+        if (property == "favourites") {
+            save(FAVOURITES_KEY, value);
+            window.dispatchEvent(new Event("appfavouriteschange"));
         }
         return true;
     }
