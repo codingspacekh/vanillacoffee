@@ -1,40 +1,49 @@
 import { getProductById } from "./Menu.js";
 import { nextOrderNumber } from "./Store.js";
+import { createItem } from "./Options.js";
 
 function showToast(message) {
     window.dispatchEvent(new CustomEvent("apptoast", { detail: message }));
 }
 
-export async function addToCart(id) {
+// Adds lines, merging with lines that have the same product and choices.
+// Always assign a new array: the Store only notices assignments.
+function mergeIntoCart(items) {
+    let cart = app.store.cart;
+    for (const item of items) {
+        cart = cart.some(line => line.key == item.key)
+            ? cart.map(line => line.key == item.key
+                               ? { ...line, quantity: line.quantity + item.quantity }
+                               : line)
+            : [...cart, item];
+    }
+    app.store.cart = cart;
+}
+
+export async function addToCart(id, options = {}) {
     const product = await getProductById(id);
     if (!product) {
         return;
     }
-    const inCart = app.store.cart.some(item => item.product.id == id);
-    // Always assign a new array: the Store only notices assignments
-    app.store.cart = inCart
-        ? app.store.cart.map(item => item.product.id == id
-                                     ? { ...item, quantity: item.quantity + 1 }
-                                     : item)
-        : [...app.store.cart, { product, quantity: 1 }];
+    mergeIntoCart([createItem(product, options)]);
     showToast(`${product.name} added to cart`);
 }
 
-export function removeFromCart(id) {
-    app.store.cart = app.store.cart.filter(item => item.product.id != id);
+export function removeFromCart(key) {
+    app.store.cart = app.store.cart.filter(item => item.key != key);
 }
 
 // Removes the line when its quantity drops to zero
-export function changeQuantity(id, delta) {
+export function changeQuantity(key, delta) {
     app.store.cart = app.store.cart
-        .map(item => item.product.id == id
+        .map(item => item.key == key
                      ? { ...item, quantity: item.quantity + delta }
                      : item)
         .filter(item => item.quantity > 0);
 }
 
 export function cartTotal(cart) {
-    return cart.reduce((total, item) => total + item.quantity * item.product.price, 0);
+    return cart.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
 }
 
 export function clearCart() {

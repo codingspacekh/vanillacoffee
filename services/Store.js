@@ -1,3 +1,5 @@
+import { normalizeItem } from "./Options.js";
+
 const CART_KEY = "cm-cart";
 const LAST_ORDER_KEY = "cm-last-order";
 const ORDER_NUMBER_KEY = "cm-order-number";
@@ -21,15 +23,27 @@ function save(key, value) {
     }
 }
 
-const savedCart = load(CART_KEY, []);
+// Saved cart lines may come from an older version of the app
+function loadItems(items) {
+    try {
+        return Array.isArray(items) ? items.map(normalizeItem) : [];
+    } catch {
+        return [];
+    }
+}
+
+function loadOrder(order) {
+    return order && { ...order, items: loadItems(order.items) };
+}
+
 const savedFavourites = load(FAVOURITES_KEY, []);
 
 // The app's state lives in one object. Setting a property on the proxy
 // saves it and announces the change with an event.
 const Store = {
     menu: null,
-    cart: Array.isArray(savedCart) ? savedCart : [],
-    lastOrder: load(LAST_ORDER_KEY, null),
+    cart: loadItems(load(CART_KEY, [])),
+    lastOrder: loadOrder(load(LAST_ORDER_KEY, null)),
     favourites: Array.isArray(savedFavourites) ? savedFavourites : [],
 };
 
