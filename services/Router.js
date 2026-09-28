@@ -29,6 +29,9 @@ const Router = {
             case "/order":
                 pageElement = document.createElement("order-page");
                 break;
+            case "/orders":
+                pageElement = document.createElement("orders-page");
+                break;
             case "/order/confirmed":
                 pageElement = document.createElement("confirmation-page");
                 break;

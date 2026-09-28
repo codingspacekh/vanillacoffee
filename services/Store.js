@@ -2,6 +2,7 @@ import { normalizeItem } from "./Options.js";
 
 const CART_KEY = "cm-cart";
 const LAST_ORDER_KEY = "cm-last-order";
+const ORDERS_KEY = "cm-orders";
 const ORDER_NUMBER_KEY = "cm-order-number";
 const FAVOURITES_KEY = "cm-favourites";
 
@@ -36,6 +37,7 @@ function loadOrder(order) {
     return order && { ...order, items: loadItems(order.items) };
 }
 
+const savedOrders = load(ORDERS_KEY, []);
 const savedFavourites = load(FAVOURITES_KEY, []);
 
 // The app's state lives in one object. Setting a property on the proxy
@@ -44,6 +46,7 @@ const Store = {
     menu: null,
     cart: loadItems(load(CART_KEY, [])),
     lastOrder: loadOrder(load(LAST_ORDER_KEY, null)),
+    orders: Array.isArray(savedOrders) ? savedOrders.map(loadOrder) : [],
     favourites: Array.isArray(savedFavourites) ? savedFavourites : [],
 };
 
@@ -65,6 +68,9 @@ const proxiedStore = new Proxy(Store, {
         }
         if (property == "lastOrder") {
             save(LAST_ORDER_KEY, value);
+        }
+        if (property == "orders") {
+            save(ORDERS_KEY, value);
         }
         if (property == "favourites") {
             save(FAVOURITES_KEY, value);

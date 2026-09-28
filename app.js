@@ -10,6 +10,7 @@ import "./components/OrderPage.js";
 import "./components/CartItem.js";
 import "./components/ConfirmationPage.js";
 import "./components/ToastMessage.js";
+import "./components/OrdersPage.js";
 
 window.app = {};
 app.store = Store;

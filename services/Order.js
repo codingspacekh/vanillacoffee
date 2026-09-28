@@ -2,6 +2,8 @@ import { getProductById } from "./Menu.js";
 import { nextOrderNumber } from "./Store.js";
 import { createItem } from "./Options.js";
 
+const MAX_ORDERS = 50;
+
 function showToast(message) {
     window.dispatchEvent(new CustomEvent("apptoast", { detail: message }));
 }
@@ -54,11 +56,26 @@ export function placeOrder(customer) {
     // A real shop would send the order to a server here
     const order = {
         number: nextOrderNumber(),
+        placedAt: new Date().toISOString(),
         customer: { ...customer },
         items: app.store.cart,
         total: cartTotal(app.store.cart),
     };
     app.store.lastOrder = order;
+    app.store.orders = [order, ...app.store.orders].slice(0, MAX_ORDERS);
     clearCart();
     return order;
+}
+
+// Uses today's menu, so prices are current and removed products are skipped
+export async function reorder(order) {
+    const items = [];
+    for (const item of order.items) {
+        const product = await getProductById(item.product.id);
+        if (product) {
+            items.push(createItem(product, item.options, item.quantity));
+        }
+    }
+    mergeIntoCart(items);
+    showToast(`Order #${order.number} added to cart`);
 }
