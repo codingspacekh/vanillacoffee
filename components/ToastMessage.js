@@ -1,19 +1,19 @@
 const DURATION = 2000;
 
-// A status region that announces short messages, such as items added to the cart
+// A status region that announces short messages sent with an "apptoast" event
 export default class ToastMessage extends HTMLElement {
     constructor() {
         super();
-        this.onCartAdd = event => this.show(`${event.detail.name} added to cart`);
+        this.onToast = event => this.show(event.detail);
     }
 
     connectedCallback() {
         this.setAttribute("role", "status");
-        window.addEventListener("appcartadd", this.onCartAdd);
+        window.addEventListener("apptoast", this.onToast);
     }
 
     disconnectedCallback() {
-        window.removeEventListener("appcartadd", this.onCartAdd);
+        window.removeEventListener("apptoast", this.onToast);
         clearTimeout(this.timer);
     }
 

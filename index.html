@@ -24,10 +24,13 @@
     <header>
         <h1><img src="/images/logo.svg" width="140" alt="Coffee Masters"></h1>
         <nav>
-            <a class="navlink material-symbols-outlined" id="linkHome" href="/">
+            <a class="navlink material-symbols-outlined" id="linkHome" href="/" aria-label="Menu">
                     local_cafe
             </a>
-            <a class="navlink material-symbols-outlined" id="linkOrder" href="/order">
+            <a class="navlink material-symbols-outlined" id="linkOrders" href="/orders" aria-label="Order history">
+                    receipt_long
+            </a>
+            <a class="navlink material-symbols-outlined" id="linkOrder" href="/order" aria-label="Cart">
                     shopping_cart
             </a>
             <span id="badge" hidden></span>
@@ -40,6 +43,10 @@
 
     <template id="menu-page-template">
         <frontendmasters-genius-code></frontendmasters-genius-code>
+        <form class="filters" role="search">
+            <input id="search" type="search" aria-label="Search the menu" placeholder="Search the menu" autocomplete="off">
+            <div class="chips" role="group" aria-label="Categories"></div>
+        </form>
         <section>
             <ul id="menu"></ul>
         </section>
@@ -48,13 +55,14 @@
     <template id="product-item-template">
         <article>
             <a href="#">
-                <img>
+                <button type="button" class="favourite" aria-pressed="false"></button>
+                <img alt="">
                 <section>
                     <div>
                         <h4></h4>
                         <p class="price"></p>
                     </div>
-                    <button>Add</button>
+                    <button type="button" class="add">Add</button>
                 </section>
             </a>
         </article>
@@ -83,6 +91,7 @@
         </header>
         <img src="">
         <p class="description"></p>
+        <form class="options"></form>
         <p class="price"></p>
         <button>Add to cart</button>
     </template>
@@ -94,7 +103,10 @@
                 <span class='qty'></span>
                 <button type="button" class="increase">+</button>
             </p>
-            <p class='name'></p>
+            <div class='details'>
+                <p class='name'></p>
+                <p class='options'></p>
+            </div>
             <p class='price'></p>
             <p class='toolbar'>
                 <a href="#" class="delete-button">

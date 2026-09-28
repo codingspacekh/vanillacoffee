@@ -11,6 +11,7 @@ import ProductItem from './components/ProductItem.js';
 import CartItem from './components/CartItem.js';
 import { ConfirmationPage } from './components/ConfirmationPage.js';
 import ToastMessage from './components/ToastMessage.js';
+import { OrdersPage } from './components/OrdersPage.js';
 
 window.app = {}
 app.store = Store;
@@ -41,3 +42,9 @@ window.addEventListener("appcartchange", updateBadge);
 
 
 
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/serviceworker.js");
+    });
+}

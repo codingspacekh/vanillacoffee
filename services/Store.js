@@ -1,6 +1,10 @@
+import { normalizeItem } from "./Options.js";
+
 const CART_KEY = "cm-cart";
 const LAST_ORDER_KEY = "cm-last-order";
+const ORDERS_KEY = "cm-orders";
 const ORDER_NUMBER_KEY = "cm-order-number";
+const FAVOURITES_KEY = "cm-favourites";
 
 // Storage can be unavailable (private mode) or hold stale data
 function load(key, fallback) {
@@ -19,12 +23,27 @@ function save(key, value) {
     }
 }
 
-const savedCart = load(CART_KEY, []);
+function loadItems(items) {
+    try {
+        return Array.isArray(items) ? items.map(normalizeItem) : [];
+    } catch {
+        return [];
+    }
+}
+
+function loadOrder(order) {
+    return order && { ...order, items: loadItems(order.items) };
+}
+
+const savedOrders = load(ORDERS_KEY, []);
+const savedFavourites = load(FAVOURITES_KEY, []);
 
 const Store = {
     menu: null,
-    cart: Array.isArray(savedCart) ? savedCart : [],
-    lastOrder: load(LAST_ORDER_KEY, null),
+    cart: loadItems(load(CART_KEY, [])),
+    lastOrder: loadOrder(load(LAST_ORDER_KEY, null)),
+    orders: Array.isArray(savedOrders) ? savedOrders.map(loadOrder) : [],
+    favourites: Array.isArray(savedFavourites) ? savedFavourites : [],
 }
 
 export function nextOrderNumber() {
@@ -45,6 +64,13 @@ const proxiedStore = new Proxy(Store, {
         }
         if (property=="lastOrder") {
             save(LAST_ORDER_KEY, value);
+        }
+        if (property=="orders") {
+            save(ORDERS_KEY, value);
+        }
+        if (property=="favourites") {
+            save(FAVOURITES_KEY, value);
+            window.dispatchEvent(new Event("appfavouriteschange"));
         }
         return true;
     }

@@ -13,7 +13,7 @@ const Router = {
         });
 
         // Check the initial URL, recording it on the current history entry
-        history.replaceState({ route: location.pathname }, '', location.pathname);
+        history.replaceState({ route: location.pathname }, '', location.pathname + location.search);
         Router.go(location.pathname, false);
     },
     go: (route, addToHistory=true) => {
@@ -29,6 +29,9 @@ const Router = {
                 break;
             case "/order":
                 pageElement = document.createElement("order-page");
+                break;
+            case "/orders":
+                pageElement = document.createElement("orders-page");
                 break;
             case "/order/confirmed":
                 pageElement = document.createElement("confirmation-page");

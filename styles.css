@@ -55,6 +55,13 @@ a.navlink {
     left: 5px;
 }
 
+#linkOrders {
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: 50px;
+}
+
 #linkOrder {
     display: block;
     position: absolute;

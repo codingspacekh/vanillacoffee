@@ -67,3 +67,17 @@ li:last-child {
     color: var(--color3);
     text-decoration: none;
 }
+
+.details {
+    flex: 5;
+}
+
+.details .name {
+    margin-bottom: 0;
+}
+
+.options {
+    margin: 2px 0 12px;
+    color: var(--color3);
+    font-size: 12px;
+}
