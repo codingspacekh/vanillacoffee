@@ -1,8 +1,7 @@
 import { adoptStyles } from "../services/Styles.js";
 import { describeOptions } from "../services/Options.js";
 import { reorder } from "../services/Order.js";
-
-const dateFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" });
+import { formatDate, localized, t } from "../services/I18n.js";
 
 export class OrdersPage extends HTMLElement {
     constructor() {
@@ -36,15 +35,18 @@ export class OrdersPage extends HTMLElement {
             section.innerHTML = `
                 <div class="empty-state">
                     <span class="icon" aria-hidden="true">receipt_long</span>
-                    <p class="empty">No past orders yet</p>
-                    <a href="/" class="back">Back to menu</a>
+                    <p class="empty"></p>
+                    <a href="/" class="back"></a>
                 </div>
             `;
+            section.querySelector(".empty").textContent = t("orders.empty");
+            section.querySelector(".back").textContent = t("common.backToMenu");
             return;
         }
 
-        section.innerHTML = `<div class="heading"><h2>Order history</h2><p class="balance"></p></div>`;
-        section.querySelector(".balance").textContent = `You have ${app.store.points} points`;
+        section.innerHTML = `<div class="heading"><h2></h2><p class="balance"></p></div>`;
+        section.querySelector("h2").textContent = t("orders.title");
+        section.querySelector(".balance").textContent = t("loyalty.balance", { points: app.store.points });
         for (const order of app.store.orders) {
             const article = document.createElement("article");
             article.innerHTML = `
@@ -55,21 +57,22 @@ export class OrdersPage extends HTMLElement {
                 <p class="items"></p>
                 <footer>
                     <p class="total"></p>
-                    <button type="button" class="reorder">Reorder</button>
+                    <button type="button" class="reorder"></button>
                 </footer>
             `;
-            article.querySelector(".number").textContent = `Order #${order.number}`;
+            article.querySelector(".number").textContent = t("confirmation.number", { number: order.number });
             const time = article.querySelector("time");
             time.dateTime = order.placedAt;
-            time.textContent = dateFormat.format(new Date(order.placedAt));
+            time.textContent = formatDate(new Date(order.placedAt));
             article.querySelector(".items").textContent = order.items.map(item => {
                 const options = describeOptions(item.product, item.options);
-                return `${item.quantity}x ${item.product.name}${options ? ` (${options})` : ""}`;
+                return `${item.quantity}x ${localized(item.product)}${options ? ` (${options})` : ""}`;
             }).join(", ");
             article.querySelector(".total").textContent = `$${order.total.toFixed(2)}`;
             const button = article.querySelector("button.reorder");
             button.dataset.number = order.number;
-            button.setAttribute("aria-label", `Reorder order #${order.number}`);
+            button.textContent = t("orders.reorder");
+            button.setAttribute("aria-label", t("orders.reorderLabel", { number: order.number }));
             section.appendChild(article);
         }
     }

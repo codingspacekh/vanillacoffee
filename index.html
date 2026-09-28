@@ -23,23 +23,23 @@
     <header>
         <h1><img src="/images/logo.svg" width="132" height="28" alt="Coffee Masters"></h1>
         <!-- Tabs sit in the header on wide screens and at the bottom on phones -->
-        <nav class="tabs" aria-label="Main">
-            <a class="navlink" id="linkHome" href="/" aria-label="Menu">
+        <nav class="tabs" aria-label="Main" data-i18n-label="nav.main">
+            <a class="navlink" id="linkHome" href="/" aria-label="Menu" data-i18n-label="nav.menu">
                 <span class="material-symbols-outlined" aria-hidden="true">local_cafe</span>
-                <span class="label">Menu</span>
+                <span class="label" data-i18n="nav.menu">Menu</span>
             </a>
-            <a class="navlink" id="linkOrders" href="/orders" aria-label="Order history">
+            <a class="navlink" id="linkOrders" href="/orders" aria-label="Order history" data-i18n-label="nav.orders">
                 <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
-                <span class="label">History</span>
+                <span class="label" data-i18n="nav.historyShort">History</span>
             </a>
-            <a class="navlink" id="linkOrder" href="/order" aria-label="Cart">
+            <a class="navlink" id="linkOrder" href="/order" aria-label="Cart" data-i18n-label="nav.cart">
                 <span class="material-symbols-outlined" aria-hidden="true">shopping_bag</span>
-                <span class="label">Cart</span>
+                <span class="label" data-i18n="nav.cartShort">Cart</span>
                 <span id="badge" hidden></span>
             </a>
         </nav>
         <div class="settings">
-            <button type="button" id="language" lang="km" aria-label="ភាសាខ្មែរ">ខ្មែរ</button>
+            <button type="button" id="language" lang="km" aria-label="ភាសាខ្មែរ" data-i18n="language.switchShort" data-i18n-label="language.switch">ខ្មែរ</button>
             <button type="button" id="theme" class="material-symbols-outlined" aria-label="Switch to dark theme">dark_mode</button>
         </div>
     </header>
@@ -48,19 +48,19 @@
 
     <footer>
         <img src="/images/logo.svg" width="118" height="25" alt="">
-        <p>© <span id="year">2026</span> Coffee Masters. <span>All rights reserved.</span></p>
+        <p>© <span id="year">2026</span> Coffee Masters. <span data-i18n="footer.rights">All rights reserved.</span></p>
     </footer>
 
     <toast-message></toast-message>
 
     <template id="menu-page-template">
-        <h2 class="greeting">What would you like today?</h2>
+        <h2 class="greeting" data-i18n="menu.greeting">What would you like today?</h2>
         <form class="filters" role="search">
             <div class="search">
                 <span class="icon" aria-hidden="true">search</span>
-                <input id="search" type="search" aria-label="Search the menu" placeholder="Search the menu" autocomplete="off">
+                <input id="search" type="search" aria-label="Search the menu" placeholder="Search the menu" autocomplete="off" data-i18n-label="menu.search" data-i18n-placeholder="menu.search">
             </div>
-            <div class="chips" role="group" aria-label="Categories"></div>
+            <div class="chips" role="group" aria-label="Categories" data-i18n-label="menu.categories"></div>
         </form>
         <section>
             <ul id="menu"></ul>
@@ -79,7 +79,7 @@
                     </div>
                     <button type="button" class="add">
                         <span class="icon" aria-hidden="true">add</span>
-                        <span>Add</span>
+                        <span data-i18n="product.add">Add</span>
                     </button>
                 </section>
             </a>
@@ -88,23 +88,23 @@
 
     <template id="order-form-template">
         <form novalidate>
-            <label for="name">Your Name</label>
+            <label for="name" data-i18n="order.name">Your Name</label>
             <input id="name" name="name" autocomplete="name" required aria-describedby="name-error">
             <p class="error" id="name-error" aria-live="polite"></p>
-            <label for="phone">Your Phone Number</label>
+            <label for="phone" data-i18n="order.phone">Your Phone Number</label>
             <input id="phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="phone-error">
             <p class="error" id="phone-error" aria-live="polite"></p>
-            <label for="email">Your Email</label>
+            <label for="email" data-i18n="order.email">Your Email</label>
             <input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-error">
             <p class="error" id="email-error" aria-live="polite"></p>
-            <button type="submit">Place Order</button>
+            <button type="submit" data-i18n="order.place">Place Order</button>
         </form>
     </template>
 
     <template id="details-page-template">
         <a href="#" class="back">
             <span class="icon" aria-hidden="true">arrow_back</span>
-            <span>Back</span>
+            <span data-i18n="details.back">Back</span>
         </a>
         <img src="" alt="">
         <h2></h2>
@@ -112,7 +112,7 @@
         <form class="options"></form>
         <div class="buy-bar">
             <p class="price"></p>
-            <button class="add-to-cart">Add to cart</button>
+            <button class="add-to-cart" data-i18n="details.addToCart">Add to cart</button>
         </div>
     </template>
 
@@ -144,7 +144,7 @@
             <p class="number"></p>
             <ul></ul>
             <p class="total"></p>
-            <a href="/" class="back">Back to menu</a>
+            <a href="/" class="back" data-i18n="common.backToMenu">Back to menu</a>
         </section>
     </template>
 </body>

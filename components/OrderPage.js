@@ -1,21 +1,22 @@
 import { adoptStyles } from "../services/Styles.js";
 import { orderTotals, placeOrder } from "../services/Order.js";
 import { hasReward, REWARD_POINTS, rewardItem } from "../services/Loyalty.js";
+import { t } from "../services/I18n.js";
 
 // Each returns an error message, or "" when the field is valid
 const validators = {
-    name: input => input.value.trim() ? "" : "Please enter your name",
+    name: input => input.value.trim() ? "" : t("order.error.name"),
     phone: input => {
         const value = input.value.trim();
         if (!value) {
-            return "Please enter your phone number";
+            return t("order.error.phoneMissing");
         }
         const digits = value.replace(/\D/g, "").length;
         return /^\+?[\d\s-]+$/.test(value) && digits >= 7 && digits <= 15
             ? ""
-            : "Please enter a valid phone number";
+            : t("order.error.phoneInvalid");
     },
-    email: input => input.validity.typeMismatch ? "Please enter a valid email address" : "",
+    email: input => input.validity.typeMismatch ? t("order.error.email") : "",
 };
 
 // What the customer has typed so far. It lives outside the element, so it
@@ -61,15 +62,15 @@ export class OrderPage extends HTMLElement {
             section.innerHTML = `
                 <div class="empty-state">
                     <span class="icon" aria-hidden="true">shopping_bag</span>
-                    <p class="empty">Your order is empty</p>
-                    <a href="/" class="button">Browse the menu</a>
+                    <p class="empty">${t("order.empty")}</p>
+                    <a href="/" class="button">${t("order.browse")}</a>
                 </div>
             `;
             return;
         }
 
         section.innerHTML = `
-            <h2>Your Order</h2>
+            <h2>${t("order.title")}</h2>
             <ul class="summary"></ul>
         `;
         const list = section.querySelector("ul");
@@ -82,14 +83,14 @@ export class OrderPage extends HTMLElement {
         if (discount > 0) {
             list.insertAdjacentHTML("beforeend", `
                 <li class="reward-line">
-                    <p class="reward-label">Free drink</p>
+                    <p class="reward-label">${t("loyalty.rewardLine")}</p>
                     <p class="reward-amount">−$${discount.toFixed(2)}</p>
                 </li>
             `);
         }
         list.insertAdjacentHTML("beforeend", `
             <li>
-                <p class="total">Total</p>
+                <p class="total">${t("order.total")}</p>
                 <p class="price-total">$${total.toFixed(2)}</p>
             </li>
         `);
@@ -112,11 +113,11 @@ export class OrderPage extends HTMLElement {
             </div>
             <div class="progress" role="progressbar" aria-valuemin="0"><div class="fill"></div></div>
         `;
-        panel.querySelector(".points").textContent = `${points} / ${REWARD_POINTS} points`;
+        panel.querySelector(".points").textContent = t("loyalty.points", { points, goal: REWARD_POINTS });
 
         const progress = Math.min(points, REWARD_POINTS);
         const bar = panel.querySelector(".progress");
-        bar.setAttribute("aria-label", "Loyalty points");
+        bar.setAttribute("aria-label", t("loyalty.label"));
         bar.setAttribute("aria-valuemax", REWARD_POINTS);
         bar.setAttribute("aria-valuenow", progress);
         bar.querySelector(".fill").style.width = `${progress / REWARD_POINTS * 100}%`;
@@ -126,7 +127,8 @@ export class OrderPage extends HTMLElement {
             const label = document.createElement("label");
             label.className = "reward";
             label.innerHTML = `<input type="checkbox" id="use-reward"> <span></span>`;
-            label.querySelector("span").textContent = `Use my free drink (−$${drink.unitPrice.toFixed(2)})`;
+            label.querySelector("span").textContent =
+                t("loyalty.useReward", { amount: `$${drink.unitPrice.toFixed(2)}` });
             const checkbox = label.querySelector("input");
             checkbox.checked = reward.use;
             checkbox.addEventListener("change", () => {
@@ -140,8 +142,8 @@ export class OrderPage extends HTMLElement {
             const hint = document.createElement("p");
             hint.className = "hint";
             hint.textContent = hasReward(points)
-                ? "You have a free drink! Add a drink to use it."
-                : `${REWARD_POINTS - points} more points for a free drink`;
+                ? t("loyalty.addDrink")
+                : t("loyalty.remaining", { remaining: REWARD_POINTS - points });
             panel.appendChild(hint);
         }
         return panel;

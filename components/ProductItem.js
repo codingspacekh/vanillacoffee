@@ -1,5 +1,6 @@
 import { addToCart } from "../services/Order.js";
 import { isFavourite, toggleFavourite } from "../services/Favourites.js";
+import { localized, t } from "../services/I18n.js";
 
 export default class ProductItem extends HTMLElement {
     connectedCallback() {
@@ -8,13 +9,13 @@ export default class ProductItem extends HTMLElement {
 
         const product = JSON.parse(this.dataset.product);
         this.dataset.productId = product.id;
-        this.querySelector("h4").textContent = product.name;
+        this.querySelector("h4").textContent = localized(product);
         this.querySelector("p.price").textContent = `$${product.price.toFixed(2)}`;
         this.querySelector("img").src = `/data/images/${product.image}`;
 
         const favourite = isFavourite(product.id);
         const heart = this.querySelector("button.favourite");
-        heart.setAttribute("aria-label", `Favourite ${product.name}`);
+        heart.setAttribute("aria-label", t("product.favourite", { name: localized(product) }));
         heart.setAttribute("aria-pressed", favourite);
         heart.textContent = favourite ? "♥" : "♡";
 

@@ -1,3 +1,5 @@
+import { t } from "./I18n.js";
+
 // Product options (size, milk, ...) are groups of choices; the first
 // choice of each group is the default and carries no extra cost.
 
@@ -38,7 +40,7 @@ export function itemKey(product, options) {
 // e.g. "Size: Large · Milk: Oat"; empty when every choice is the default
 export function describeOptions(product, options) {
     return nonDefaultChoices(product, options)
-        .map(([g, c]) => `${g}: ${c}`)
+        .map(([g, c]) => `${t(`option.${g}`)}: ${t(`choice.${c}`)}`)
         .join(" · ");
 }
 

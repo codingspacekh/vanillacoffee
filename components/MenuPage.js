@@ -1,5 +1,6 @@
 import { adoptStyles } from "../services/Styles.js";
 import { isFavourite } from "../services/Favourites.js";
+import { localized, t } from "../services/I18n.js";
 
 // "ICED COFFEE" → "iced-coffee", for use in the URL
 const slug = name => name.toLowerCase().replace(/\s+/g, "-");
@@ -82,7 +83,7 @@ export class MenuPage extends HTMLElement {
             chips.replaceChildren();
             return;
         }
-        const categories = [["All", ""], ...app.store.menu.map(c => [c.name, slug(c.name)])];
+        const categories = [[t("menu.all"), ""], ...app.store.menu.map(c => [localized(c), slug(c.name)])];
         chips.replaceChildren(...categories.map(([name, value]) => {
             const chip = document.createElement("button");
             chip.type = "button";
@@ -96,9 +97,11 @@ export class MenuPage extends HTMLElement {
     // The sections to show: favourites first, then each matching category
     sections() {
         const query = this.query.trim().toLowerCase();
+        // Match the English and the translated names
+        const names = item => [item.name, localized(item)].map(name => name.toLowerCase());
         const matches = (product, category) => !query
-            || product.name.toLowerCase().includes(query)
-            || category.name.toLowerCase().includes(query);
+            || names(product).some(name => name.includes(query))
+            || names(category).some(name => name.includes(query));
 
         const sections = [];
         for (const category of app.store.menu) {
@@ -107,13 +110,13 @@ export class MenuPage extends HTMLElement {
             }
             const products = category.products.filter(p => matches(p, category));
             if (products.length > 0) {
-                sections.push({ name: category.name, id: slug(category.name), products });
+                sections.push({ name: localized(category), id: slug(category.name), products });
             }
         }
         if (!this.category) {
             const favourites = sections.flatMap(s => s.products).filter(p => isFavourite(p.id));
             if (favourites.length > 0) {
-                sections.unshift({ name: "Favourites", id: "favourites", products: favourites });
+                sections.unshift({ name: t("menu.favourites"), id: "favourites", products: favourites });
             }
         }
         return sections;
@@ -122,7 +125,7 @@ export class MenuPage extends HTMLElement {
     renderList() {
         const menu = this.root.querySelector("#menu");
         if (!app.store.menu) {
-            menu.textContent = "Loading...";
+            menu.textContent = t("menu.loading");
             return;
         }
 
@@ -139,8 +142,9 @@ export class MenuPage extends HTMLElement {
         if (sections.length == 0) {
             const empty = document.createElement("li");
             empty.className = "no-results";
-            empty.innerHTML = `<p></p><button type="button">Clear filters</button>`;
-            empty.querySelector("p").textContent = `No items match "${this.query}"`;
+            empty.innerHTML = `<p></p><button type="button"></button>`;
+            empty.querySelector("p").textContent = t("menu.noResults", { query: this.query });
+            empty.querySelector("button").textContent = t("menu.clearFilters");
             menu.appendChild(empty);
         }
         for (const section of sections) {

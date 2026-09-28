@@ -1,3 +1,5 @@
+import { t } from "./I18n.js";
+
 const Router = {
     init: () => {
         // Nav links change the page without reloading it
@@ -48,7 +50,7 @@ const Router = {
             main.appendChild(pageElement);
             window.scrollTo(0, 0);
         } else {
-            main.textContent = "Oups, 404!";
+            main.textContent = t("notFound");
         }
     },
 

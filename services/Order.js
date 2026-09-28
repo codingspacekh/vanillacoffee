@@ -1,6 +1,7 @@
 import { getProductById } from "./Menu.js";
 import { nextOrderNumber } from "./Store.js";
 import { createItem } from "./Options.js";
+import { localized, t } from "./I18n.js";
 import { pointsFor, REWARD_POINTS, rewardDiscount, roundCents } from "./Loyalty.js";
 
 const MAX_ORDERS = 50;
@@ -29,7 +30,7 @@ export async function addToCart(id, options = {}) {
         return;
     }
     mergeIntoCart([createItem(product, options)]);
-    showToast(`${product.name} added to cart`);
+    showToast(t("cart.added", { name: localized(product) }));
 }
 
 export function removeFromCart(key) {
@@ -94,5 +95,5 @@ export async function reorder(order) {
         }
     }
     mergeIntoCart(items);
-    showToast(`Order #${order.number} added to cart`);
+    showToast(t("orders.added", { number: order.number }));
 }
