@@ -8,7 +8,7 @@ export class OrdersPage extends HTMLElement {
         super();
         this.root = this.attachShadow({ mode: "open" });
         this.root.appendChild(document.createElement("section"));
-        adoptStyles(this.root, "/components/OrdersPage.css");
+        adoptStyles(this.root, "/components/shared.css", "/components/OrdersPage.css");
 
         this.root.addEventListener("click", async event => {
             if (event.target.closest("a.back")) {
@@ -32,16 +32,20 @@ export class OrdersPage extends HTMLElement {
         const section = this.root.querySelector("section");
         if (app.store.orders.length == 0) {
             section.innerHTML = `
-                <p class="empty"></p>
-                <a href="/" class="back"></a>
+                <div class="empty-state">
+                    <span class="icon" aria-hidden="true">receipt_long</span>
+                    <p class="empty"></p>
+                    <a href="/" class="back"></a>
+                </div>
             `;
             section.querySelector(".empty").textContent = t("orders.empty");
             section.querySelector(".back").textContent = t("common.backToMenu");
             return;
         }
 
-        section.innerHTML = `<h2></h2>`;
+        section.innerHTML = `<div class="heading"><h2></h2><p class="balance"></p></div>`;
         section.querySelector("h2").textContent = t("orders.title");
+        section.querySelector(".balance").textContent = t("loyalty.balance", { points: app.store.points });
         for (const order of app.store.orders) {
             const article = document.createElement("article");
             article.innerHTML = `

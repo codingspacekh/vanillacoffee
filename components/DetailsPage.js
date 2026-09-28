@@ -14,7 +14,7 @@ export class DetailsPage extends HTMLElement {
         const template = document.getElementById("details-page-template");
         const content = template.content.cloneNode(true);
         this.root.appendChild(content);    
-        adoptStyles(this.root, "/components/DetailsPage.css");
+        adoptStyles(this.root, "/components/shared.css", "/components/DetailsPage.css");
 
         this.form = this.root.querySelector("form.options");
         this.form.addEventListener("change", () => this.renderPrice());
@@ -64,7 +64,7 @@ export class DetailsPage extends HTMLElement {
         this.product = await getProductById(this.dataset.productId);
         if (!this.product) {
             this.root.querySelector("h2").textContent = t("details.notFound");
-            for (const selector of ["img", ".description", "form.options", ".price", "button"]) {
+            for (const selector of ["img", ".description", "form.options", ".buy-bar"]) {
                 this.root.querySelector(selector).remove();
             }
             return;

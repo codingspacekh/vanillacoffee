@@ -1,6 +1,7 @@
 import { adoptStyles } from "../services/Styles.js";
 import { describeOptions } from "../services/Options.js";
 import { localized, t } from "../services/I18n.js";
+import { hasReward } from "../services/Loyalty.js";
 
 export class ConfirmationPage extends HTMLElement {
     constructor() {
@@ -8,7 +9,7 @@ export class ConfirmationPage extends HTMLElement {
         this.root = this.attachShadow({ mode: "open" });
         const template = document.getElementById("confirmation-page-template");
         this.root.appendChild(template.content.cloneNode(true));
-        adoptStyles(this.root, "/components/ConfirmationPage.css");
+        adoptStyles(this.root, "/components/shared.css", "/components/ConfirmationPage.css");
 
         this.root.querySelector("a.back").addEventListener("click", event => {
             event.preventDefault();
@@ -24,7 +25,7 @@ export class ConfirmationPage extends HTMLElement {
         const order = app.store.lastOrder;
         if (!order) {
             this.root.querySelector("h2").textContent = t("confirmation.none");
-            for (const selector of [".number", "ul", ".total"]) {
+            for (const selector of [".check", ".number", "ul", ".total"]) {
                 this.root.querySelector(selector).remove();
             }
             return;
@@ -51,7 +52,30 @@ export class ConfirmationPage extends HTMLElement {
             list.appendChild(li);
         }
 
+        if (order.discount > 0) {
+            const li = document.createElement("li");
+            li.className = "reward-line";
+            li.innerHTML = `<p class="reward-label"></p><p class="price"></p>`;
+            li.querySelector(".reward-label").textContent = t("loyalty.rewardLine");
+            li.querySelector(".price").textContent = `−$${order.discount.toFixed(2)}`;
+            list.appendChild(li);
+        }
+
         this.root.querySelector(".total").textContent = t("confirmation.total", { total: `$${order.total.toFixed(2)}` });
+
+        // Orders placed before loyalty points existed have no points info
+        if (order.pointsEarned != null) {
+            const points = document.createElement("p");
+            points.className = "points";
+            points.textContent = t("loyalty.earned", { earned: order.pointsEarned, balance: order.pointsBalance });
+            this.root.querySelector(".total").after(points);
+            if (hasReward(order.pointsBalance)) {
+                const ready = document.createElement("p");
+                ready.className = "reward-ready";
+                ready.textContent = t("loyalty.rewardReady");
+                points.after(ready);
+            }
+        }
     }
 }
 

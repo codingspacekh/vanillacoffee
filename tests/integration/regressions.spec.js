@@ -133,6 +133,7 @@ test("component stylesheets are downloaded once", async ({ page }) => {
         "/components/DetailsPage.css",
         "/components/MenuPage.css",
         "/components/OrderPage.css",
+        "/components/shared.css",
     ]);
 });
 

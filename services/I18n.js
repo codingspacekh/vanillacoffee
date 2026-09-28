@@ -7,13 +7,19 @@ export const languages = ["en", "km"];
 
 export const dictionaries = {
     en: {
+        "nav.main": "Main",
         "nav.menu": "Menu",
+        "nav.historyShort": "History",
+        "nav.cartShort": "Cart",
         "nav.orders": "Order history",
         "nav.cart": "Cart",
         "language.switch": "ភាសាខ្មែរ",
         "language.switchShort": "ខ្មែរ",
         "language.switchLang": "km",
+        "theme.dark": "Switch to dark theme",
+        "theme.light": "Switch to light theme",
 
+        "menu.greeting": "What would you like today?",
         "menu.search": "Search the menu",
         "menu.categories": "Categories",
         "menu.all": "All",
@@ -24,7 +30,7 @@ export const dictionaries = {
         "product.add": "Add",
         "product.favourite": "Favourite {name}",
 
-        "details.back": "< Back",
+        "details.back": "Back",
         "details.notFound": "Product not found",
         "details.price": "$ {price} ea",
         "details.addToCart": "Add to cart",
@@ -49,6 +55,7 @@ export const dictionaries = {
         "cart.added": "{name} added to cart",
 
         "order.empty": "Your order is empty",
+        "order.browse": "Browse the menu",
         "order.title": "Your Order",
         "order.total": "Total",
         "order.name": "Your Name",
@@ -72,16 +79,34 @@ export const dictionaries = {
         "orders.reorderLabel": "Reorder order #{number}",
         "orders.added": "Order #{number} added to cart",
 
+        "loyalty.label": "Loyalty points",
+        "loyalty.points": "{points} / {goal} points",
+        "loyalty.remaining": "{remaining} more points for a free drink",
+        "loyalty.useReward": "Use my free drink (−{amount})",
+        "loyalty.addDrink": "You have a free drink! Add a drink to use it.",
+        "loyalty.rewardLine": "Free drink",
+        "loyalty.earned": "+{earned} points · You now have {balance} points",
+        "loyalty.rewardReady": "You've earned a free drink! Use it on your next order.",
+        "loyalty.balance": "You have {points} points",
+
+        "footer.rights": "All rights reserved.",
+
         "notFound": "Oups, 404!",
     },
     km: {
+        "nav.main": "ការរុករកមេ",
         "nav.menu": "ម៉ឺនុយ",
+        "nav.historyShort": "ប្រវត្តិ",
+        "nav.cartShort": "កន្ត្រក",
         "nav.orders": "ប្រវត្តិការបញ្ជាទិញ",
         "nav.cart": "កន្ត្រកទំនិញ",
         "language.switch": "English",
         "language.switchShort": "EN",
         "language.switchLang": "en",
+        "theme.dark": "ប្តូរទៅផ្ទៃងងឹត",
+        "theme.light": "ប្តូរទៅផ្ទៃភ្លឺ",
 
+        "menu.greeting": "តើអ្នកចង់ពិសាអ្វីថ្ងៃនេះ?",
         "menu.search": "ស្វែងរកក្នុងម៉ឺនុយ",
         "menu.categories": "ប្រភេទ",
         "menu.all": "ទាំងអស់",
@@ -92,7 +117,7 @@ export const dictionaries = {
         "product.add": "បន្ថែម",
         "product.favourite": "ចំណូលចិត្ត {name}",
 
-        "details.back": "< ត្រឡប់",
+        "details.back": "ត្រឡប់",
         "details.notFound": "រកមិនឃើញផលិតផល",
         "details.price": "$ {price} ក្នុងមួយ",
         "details.addToCart": "ដាក់ចូលកន្ត្រក",
@@ -117,6 +142,7 @@ export const dictionaries = {
         "cart.added": "បានដាក់ {name} ចូលកន្ត្រក",
 
         "order.empty": "ការបញ្ជាទិញរបស់អ្នកនៅទទេ",
+        "order.browse": "មើលម៉ឺនុយ",
         "order.title": "ការបញ្ជាទិញរបស់អ្នក",
         "order.total": "សរុប",
         "order.name": "ឈ្មោះរបស់អ្នក",
@@ -139,6 +165,18 @@ export const dictionaries = {
         "orders.reorder": "បញ្ជាទិញម្តងទៀត",
         "orders.reorderLabel": "បញ្ជាទិញម្តងទៀតនូវការបញ្ជាទិញ #{number}",
         "orders.added": "បានដាក់ការបញ្ជាទិញ #{number} ចូលកន្ត្រក",
+
+        "loyalty.label": "ពិន្ទុសន្សំ",
+        "loyalty.points": "{points} / {goal} ពិន្ទុ",
+        "loyalty.remaining": "ត្រូវការ {remaining} ពិន្ទុទៀត ដើម្បីទទួលបានភេសជ្ជៈឥតគិតថ្លៃ",
+        "loyalty.useReward": "ប្រើភេសជ្ជៈឥតគិតថ្លៃរបស់ខ្ញុំ (−{amount})",
+        "loyalty.addDrink": "អ្នកមានភេសជ្ជៈឥតគិតថ្លៃ! សូមបន្ថែមភេសជ្ជៈដើម្បីប្រើវា។",
+        "loyalty.rewardLine": "ភេសជ្ជៈឥតគិតថ្លៃ",
+        "loyalty.earned": "+{earned} ពិន្ទុ · ឥឡូវអ្នកមាន {balance} ពិន្ទុ",
+        "loyalty.rewardReady": "អ្នកទទួលបានភេសជ្ជៈឥតគិតថ្លៃ! ប្រើវានៅការបញ្ជាទិញលើកក្រោយ។",
+        "loyalty.balance": "អ្នកមាន {points} ពិន្ទុ",
+
+        "footer.rights": "រក្សាសិទ្ធិគ្រប់យ៉ាង។",
 
         "notFound": "រកមិនឃើញទំព័រ (404)",
     },

@@ -57,7 +57,7 @@ test.describe("Details page", () => {
     test("Back link returns to the menu", async ({ page }) => {
         await page.goto("/product-12");
         await expect(details(page).locator("h2")).toHaveText("Cappuccino");
-        await details(page).getByRole("link", { name: "< Back" }).click();
+        await details(page).getByRole("link", { name: "Back" }).click();
         await expect(page).toHaveURL("/");
         await expect(menu(page).locator("product-item").first()).toBeVisible();
     });
@@ -79,7 +79,7 @@ test.describe("Order page", () => {
 
         await page.locator("#linkOrder").click();
         await expect(page).toHaveURL("/order");
-        await expect(order(page).locator("cart-item .qty")).toHaveText(["2x", "1x"]);
+        await expect(order(page).locator("cart-item .qty")).toHaveText(["2", "1"]);
         await expect(order(page).locator("cart-item .name")).toHaveText(["Black Americano", "Cappuccino"]);
         await expect(order(page).locator(".price-total")).toHaveText("$6.75");
     });

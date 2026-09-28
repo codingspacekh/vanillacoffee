@@ -45,6 +45,7 @@ const Router = {
                     pageElement.dataset.productId = paramId;
                 }
         }
+        Router.markCurrentTab(route);
         if (pageElement) {
             const cache = document.querySelector("main");
             cache.innerHTML = "";
@@ -58,4 +59,19 @@ const Router = {
         }
     }
 }
+// Highlights the tab for the current page (product pages belong to Menu)
+Router.markCurrentTab = route => {
+    document.querySelectorAll("a.navlink").forEach(link => {
+        const href = link.getAttribute("href");
+        const current = href == "/"
+            ? route == "/" || route.startsWith("/product-")
+            : route == href;
+        if (current) {
+            link.setAttribute("aria-current", "page");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+    });
+};
+
 export default Router;

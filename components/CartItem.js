@@ -17,7 +17,8 @@ export default class CartItem extends HTMLElement {
         this.appendChild(content);    
 
         const name = localized(item.product);
-        this.querySelector(".qty").textContent = `${item.quantity}x`;
+        this.querySelector(".qty").textContent = item.quantity;
+        this.querySelector(".thumb").src = `/data/images/${item.product.image}`;
         this.querySelector(".name").textContent = name;
         this.querySelector(".options").textContent = describeOptions(item.product, item.options);
         this.querySelector(".price").textContent = `$${item.unitPrice.toFixed(2)}`;

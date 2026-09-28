@@ -1,100 +1,120 @@
-button {
-    display: block;
-    background-color: var(--color5);
-    border: 0;
-    width: 80%;
-    margin: 16px 10%;
-    padding: 12px 0;
-    border-radius: 40px;
-    color: var(--color3);
-    font-size: 16px;
+:host {
+    max-width: 720px;
+    margin: 0 auto;
 }
 
-header {
-    display: flex;
-    flex-direction: row;
-}
-
-header>a {
-    display: block;
-    flex: 1;
-    text-decoration: none;
-    color: var(--primaryColor);
-    padding: 12px 0 12px 8px;
-    text-align: center;
+a.back {
+    display: inline-flex;
+    width: auto;
+    height: 40px;
+    margin: 0;
+    gap: 6px;
+    padding: 0 16px 0 12px;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
+    color: var(--text);
     font-size: 14px;
-}
-
-h2 {
-    color: var(--secondaryColor);
-    font-weight: normal;
-    font-size: 20px;
-    flex: 5;
-    margin: 8px;
-    text-align: center;
+    font-weight: 600;
 }
 
 img {
-    width: 96%;
-    margin: 0 2%;
-    margin-top: 12px;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    margin: 16px 0 20px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-2);
+}
+
+h2 {
+    margin-bottom: 8px;
+    font-size: 30px;
 }
 
 .description {
-    margin: 4px;
-    padding: 0 12px;
-    color: var(--primaryColor);
-    font-size: 13px;
-}
-
-.price {
-    color: var(--secondaryColor);
-    padding: 0 24px;
-}
-
-
-.options {
-    margin: 8px 12px;
+    margin-bottom: 24px;
+    color: var(--text-muted);
+    line-height: 1.65;
 }
 
 fieldset {
-    border: 0;
-    margin: 0 0 8px;
+    margin: 0 0 20px;
     padding: 0;
+    border: 0;
 }
 
 legend {
-    color: var(--color3);
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
     padding: 0;
+    color: var(--text);
+    font-weight: 700;
 }
 
 fieldset label {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    margin: 0 6px 6px 0;
-    padding: 6px 12px;
-    border: 1px solid var(--color5);
-    border-radius: 20px;
-    color: var(--primaryColor);
+    gap: 6px;
+    margin: 0 8px 8px 0;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--surface);
+    color: var(--text);
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
 }
 
 fieldset label:has(input:checked) {
-    background-color: var(--color6);
-    border-color: var(--color3);
+    border-color: var(--primary);
+    background-color: var(--accent-soft);
 }
 
 fieldset input {
     margin: 0;
-    accent-color: var(--color3);
+    accent-color: var(--primary);
 }
 
 .extra {
-    color: var(--color3);
+    color: var(--accent);
     font-size: 12px;
+    font-weight: 700;
+}
+
+/* The price and button stay visible while choosing options */
+.buy-bar {
+    position: sticky;
+    bottom: calc(var(--tabbar-height) + 12px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 10px 10px 10px 22px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--surface);
+    box-shadow: var(--shadow-md);
+}
+
+.price {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+button.add-to-cart {
+    flex: 1;
+    height: 48px;
+    border: 0;
+    border-radius: 999px;
+    background-color: var(--primary);
+    color: var(--on-primary);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+button.add-to-cart:hover {
+    filter: brightness(1.08);
 }

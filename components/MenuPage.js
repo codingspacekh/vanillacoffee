@@ -8,7 +8,7 @@ export class MenuPage extends HTMLElement {
     constructor() {
         super();
         this.root = this.attachShadow({ mode: 'open' });
-        adoptStyles(this.root, "/components/MenuPage.css");
+        adoptStyles(this.root, "/components/shared.css", "/components/MenuPage.css");
         this.onMenuChange = () => this.render();
         this.onFavouritesChange = () => this.renderList();
     }

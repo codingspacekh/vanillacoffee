@@ -36,7 +36,7 @@ test.describe("1. Cart persistence", () => {
         await page.reload();
         await expect(badge(page)).toHaveText("3");
         await page.locator("#linkOrder").click();
-        await expect(order(page).locator("cart-item .qty")).toHaveText(["2x", "1x"]);
+        await expect(order(page).locator("cart-item .qty")).toHaveText(["2", "1"]);
         await expect(order(page).locator(".price-total")).toHaveText("$6.75");
     });
 
@@ -63,12 +63,12 @@ test.describe("2. Quantity buttons", () => {
         const item = order(page).locator("cart-item");
 
         await item.getByRole("button", { name: "Increase quantity of Cappuccino" }).click();
-        await expect(order(page).locator("cart-item .qty")).toHaveText("2x");
+        await expect(order(page).locator("cart-item .qty")).toHaveText("2");
         await expect(order(page).locator(".price-total")).toHaveText("$7.50");
         await expect(badge(page)).toHaveText("2");
 
         await order(page).locator("cart-item").getByRole("button", { name: "Decrease quantity of Cappuccino" }).click();
-        await expect(order(page).locator("cart-item .qty")).toHaveText("1x");
+        await expect(order(page).locator("cart-item .qty")).toHaveText("1");
         await expect(order(page).locator(".price-total")).toHaveText("$3.75");
     });
 

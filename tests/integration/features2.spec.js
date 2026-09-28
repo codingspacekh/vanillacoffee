@@ -138,13 +138,13 @@ test.describe("7. Product options", () => {
         await details(page).getByRole("radio", { name: /^Large/ }).check();
         await details(page).getByRole("button", { name: "Add to cart" }).click();
 
-        await expect(order(page).locator("cart-item .qty")).toHaveText(["2x", "1x"]);
+        await expect(order(page).locator("cart-item .qty")).toHaveText(["2", "1"]);
         await expect(order(page).locator("cart-item .options")).toHaveText(["", "Size: Large"]);
         await expect(order(page).locator(".price-total")).toHaveText("$12.25");
 
         // Quantity buttons act on one line only
         await order(page).locator("cart-item").nth(1).getByRole("button", { name: /Increase quantity/ }).click();
-        await expect(order(page).locator("cart-item .qty")).toHaveText(["2x", "2x"]);
+        await expect(order(page).locator("cart-item .qty")).toHaveText(["2", "2"]);
         await order(page).locator("cart-item").nth(0).locator(".delete-button").click();
         await expect(order(page).locator("cart-item .options")).toHaveText(["Size: Large"]);
     });
@@ -171,10 +171,10 @@ test.describe("7. Product options", () => {
             { product: { id: 12, name: "Cappuccino", price: 3.75, image: "cappuccino.png" }, quantity: 2 },
         ])));
         await page.goto("/order");
-        await expect(order(page).locator("cart-item .qty")).toHaveText("2x");
+        await expect(order(page).locator("cart-item .qty")).toHaveText("2");
         await expect(order(page).locator(".price-total")).toHaveText("$7.50");
         await order(page).getByRole("button", { name: /Increase quantity/ }).click();
-        await expect(order(page).locator("cart-item .qty")).toHaveText("3x");
+        await expect(order(page).locator("cart-item .qty")).toHaveText("3");
     });
 });
 

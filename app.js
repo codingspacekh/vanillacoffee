@@ -3,6 +3,7 @@ import API from './services/API.js'
 import { loadData } from './services/Menu.js';
 import Router from './services/Router.js';
 import { getLanguage, setLanguage, t, translateDocument } from './services/I18n.js';
+import { getTheme, setTheme } from './services/Theme.js';
 
 // Link my Web Components
 import { MenuPage } from './components/MenuPage.js';
@@ -24,7 +25,12 @@ app.router = Router;
 window.addEventListener("DOMContentLoaded", async () => {
    loadData();
    translateDocument();
+   document.getElementById("year").textContent = new Date().getFullYear();
    updateLanguageButton();
+   updateThemeButton();
+   document.getElementById("theme").addEventListener("click", () => {
+      setTheme(getTheme() == "dark" ? "light" : "dark");
+   });
    document.getElementById("language").addEventListener("click", () => {
       setLanguage(getLanguage() == "en" ? "km" : "en");
    });
@@ -49,8 +55,19 @@ function updateLanguageButton() {
 }
 
 // Rebuild the current page in the new language; the URL keeps its state
+// Shows what the button switches to
+function updateThemeButton() {
+    const button = document.getElementById("theme");
+    const dark = getTheme() == "dark";
+    button.textContent = dark ? "light_mode" : "dark_mode";
+    button.setAttribute("aria-label", t(dark ? "theme.light" : "theme.dark"));
+}
+
+window.addEventListener("appthemechange", updateThemeButton);
+
 window.addEventListener("applanguagechange", () => {
     updateLanguageButton();
+    updateThemeButton();
     app.router.go(location.pathname, false);
 });
 

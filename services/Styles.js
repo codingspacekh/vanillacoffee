@@ -20,6 +20,7 @@ export function loadStyles(url) {
     return sheets.get(url);
 }
 
-export async function adoptStyles(root, url) {
-    root.adoptedStyleSheets = [await loadStyles(url)];
+// adoptStyles(root, "/components/shared.css", "/components/MenuPage.css")
+export async function adoptStyles(root, ...urls) {
+    root.adoptedStyleSheets = await Promise.all(urls.map(loadStyles));
 }
