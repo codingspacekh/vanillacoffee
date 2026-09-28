@@ -1,0 +1,12 @@
+{
+  "name": "coffeemasters-vanilla",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node tests/server.js",
+    "test:integration": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}
