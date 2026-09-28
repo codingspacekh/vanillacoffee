@@ -15,6 +15,9 @@ export default class ProductItem extends HTMLElement {
 
         this.querySelector("a").addEventListener("click", event => {
             event.preventDefault();
+            if (!event.target.closest("button")) {
+                app.router.go(`/product-${product.id}`);
+            }
         });
     }
 }
