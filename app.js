@@ -9,6 +9,7 @@ import "./components/DetailsPage.js";
 import "./components/OrderPage.js";
 import "./components/CartItem.js";
 import "./components/ConfirmationPage.js";
+import "./components/ToastMessage.js";
 
 window.app = {};
 app.store = Store;
@@ -18,6 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("year").textContent = new Date().getFullYear();
     loadData();
     app.router.init();
+    updateBadge(); // The cart may have been restored from storage
 });
 
 // The cart tab's badge shows how many items are in the cart

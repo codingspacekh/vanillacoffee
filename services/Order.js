@@ -1,6 +1,10 @@
 import { getProductById } from "./Menu.js";
 import { nextOrderNumber } from "./Store.js";
 
+function showToast(message) {
+    window.dispatchEvent(new CustomEvent("apptoast", { detail: message }));
+}
+
 export async function addToCart(id) {
     const product = await getProductById(id);
     if (!product) {
@@ -13,10 +17,20 @@ export async function addToCart(id) {
                                      ? { ...item, quantity: item.quantity + 1 }
                                      : item)
         : [...app.store.cart, { product, quantity: 1 }];
+    showToast(`${product.name} added to cart`);
 }
 
 export function removeFromCart(id) {
     app.store.cart = app.store.cart.filter(item => item.product.id != id);
+}
+
+// Removes the line when its quantity drops to zero
+export function changeQuantity(id, delta) {
+    app.store.cart = app.store.cart
+        .map(item => item.product.id == id
+                     ? { ...item, quantity: item.quantity + delta }
+                     : item)
+        .filter(item => item.quantity > 0);
 }
 
 export function cartTotal(cart) {
