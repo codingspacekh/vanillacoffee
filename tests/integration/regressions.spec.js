@@ -62,15 +62,15 @@ test("typed customer details survive a cart change", async ({ page }) => {
     await page.locator("#linkOrder").click();
 
     await order(page).locator("input[name=name]").fill("Alex");
-    await order(page).locator("input[name=name]").blur();
+    await order(page).locator("input[name=phone]").fill("555-1234");
+    await order(page).locator("input[name=phone]").blur();
     await order(page).locator("cart-item .delete-button").first().click();
     await expect(order(page).locator("cart-item")).toHaveCount(1);
     await expect(order(page).locator("input[name=name]")).toHaveValue("Alex");
+    await expect(order(page).locator("input[name=phone]")).toHaveValue("555-1234");
 
-    let message;
-    page.once("dialog", d => { message = d.message(); d.accept(); });
     await order(page).getByRole("button", { name: "Place Order" }).click();
-    await expect.poll(() => message).toBe("Thanks for your order Alex.");
+    await expect(page.locator("confirmation-page h2")).toHaveText("Thank you, Alex!");
 });
 
 test("each cart item is rendered once per update", async ({ page }) => {
@@ -153,11 +153,13 @@ test("placing an order empties the cart", async ({ page }) => {
     await page.locator("#linkOrder").click();
 
     await order(page).locator("input[name=name]").fill("Alex");
-    page.once("dialog", d => d.accept());
+    await order(page).locator("input[name=phone]").fill("555-1234");
     await order(page).getByRole("button", { name: "Place Order" }).click();
-
-    await expect(order(page).locator(".empty")).toHaveText("Your order is empty");
+    await expect(page).toHaveURL("/order/confirmed");
     await expect(badge(page)).toBeHidden();
+
+    await page.locator("#linkOrder").click();
+    await expect(order(page).locator(".empty")).toHaveText("Your order is empty");
 
     // A new order starts with a blank form
     await page.locator("#linkHome").click();

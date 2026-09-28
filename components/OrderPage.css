@@ -113,3 +113,42 @@ input {
     border: 1px solid var(--color3);
     border-radius: 15px;
 }
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 2;
+}
+
+.quantity .qty {
+    min-width: 3ch;
+    text-align: center;
+}
+
+.quantity button {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Space is reserved so an error appearing never moves the form under the cursor */
+.error {
+    width: 90%;
+    min-height: 18px;
+    margin: 0 5% 4px;
+    color: #B3261E;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.toolbar {
+    margin-left: 8px;
+}
+
+input[aria-invalid="true"] {
+    border-color: #B3261E;
+}

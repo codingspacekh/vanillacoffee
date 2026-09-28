@@ -111,14 +111,9 @@ test.describe("Order page", () => {
         await order(page).locator("input[name=phone]").fill("555-1234");
         await order(page).locator("input[name=email]").fill("alex@example.com");
 
-        let message;
-        page.once("dialog", dialog => {
-            message = dialog.message();
-            dialog.accept();
-        });
         await order(page).getByRole("button", { name: "Place Order" }).click();
-        await expect.poll(() => message).toBe("Thanks for your order Alex.");
-        await expect(order(page).locator(".empty")).toHaveText("Your order is empty");
+        await expect(page).toHaveURL("/order/confirmed");
+        await expect(page.locator("confirmation-page h2")).toHaveText("Thank you, Alex!");
     });
 });
 

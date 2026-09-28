@@ -1,4 +1,4 @@
-import { removeFromCart } from "../services/Order.js";
+import { changeQuantity, removeFromCart } from "../services/Order.js";
 
 export default class CartItem extends HTMLElement {
     constructor() {
@@ -14,10 +14,22 @@ export default class CartItem extends HTMLElement {
 
         this.appendChild(content);    
 
+        const name = item.product.name;
         this.querySelector(".qty").textContent = `${item.quantity}x`;
-        this.querySelector(".name").textContent = item.product.name;
+        this.querySelector(".name").textContent = name;
         this.querySelector(".price").textContent = `$${item.product.price.toFixed(2)}`;
-        this.querySelector("a.delete-button").addEventListener("click", event => {
+
+        const decrease = this.querySelector("button.decrease");
+        decrease.setAttribute("aria-label", `Decrease quantity of ${name}`);
+        decrease.addEventListener("click", () => changeQuantity(item.product.id, -1));
+
+        const increase = this.querySelector("button.increase");
+        increase.setAttribute("aria-label", `Increase quantity of ${name}`);
+        increase.addEventListener("click", () => changeQuantity(item.product.id, 1));
+
+        const remove = this.querySelector("a.delete-button");
+        remove.setAttribute("aria-label", `Remove ${name}`);
+        remove.addEventListener("click", event => {
             event.preventDefault();
             removeFromCart(item.product.id);
         })

@@ -12,17 +12,17 @@
     <link rel="preload" href="/components/MenuPage.css" as="fetch" crossorigin>
     <link rel="preload" href="/data/menu.json" as="fetch" crossorigin>
 
-    <script src="app.js" defer type="module"></script>
+    <script src="/app.js" defer type="module"></script>
 
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="app.webmanifest">
-    <link rel="apple-touch-icon" href="images/icons/icon.png">
-    <link rel="icon" href="images/icons/icon.png">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="manifest" href="/app.webmanifest">
+    <link rel="apple-touch-icon" href="/images/icons/icon.png">
+    <link rel="icon" href="/images/icons/icon.png">
 </head>
 
 <body>
     <header>
-        <h1><img src="images/logo.svg" width="140" alt="Coffee Masters"></h1>
+        <h1><img src="/images/logo.svg" width="140" alt="Coffee Masters"></h1>
         <nav>
             <a class="navlink material-symbols-outlined" id="linkHome" href="/">
                     local_cafe
@@ -35,6 +35,8 @@
     </header>
 
     <main></main>
+
+    <toast-message></toast-message>
 
     <template id="menu-page-template">
         <frontendmasters-genius-code></frontendmasters-genius-code>
@@ -59,13 +61,16 @@
     </template>
 
     <template id="order-form-template">
-        <form>
+        <form novalidate>
             <label for="name">Your Name</label>
-            <input name="name" required>
+            <input id="name" name="name" autocomplete="name" required aria-describedby="name-error">
+            <p class="error" id="name-error" aria-live="polite"></p>
             <label for="phone">Your Phone Number</label>
-            <input name="phone" type="tel">
+            <input id="phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="phone-error">
+            <p class="error" id="phone-error" aria-live="polite"></p>
             <label for="email">Your Email</label>
-            <input name="email" type="email">
+            <input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-error">
+            <p class="error" id="email-error" aria-live="polite"></p>
             <button type="submit">Place Order</button>
         </form>
     </template>
@@ -84,7 +89,11 @@
 
     <template id="cart-item-template">
         <li>
-            <p class='qty'></p>
+            <p class='quantity'>
+                <button type="button" class="decrease">−</button>
+                <span class='qty'></span>
+                <button type="button" class="increase">+</button>
+            </p>
             <p class='name'></p>
             <p class='price'></p>
             <p class='toolbar'>
@@ -93,6 +102,16 @@
                 </a>
             </p>
         </li>
+    </template>
+
+    <template id="confirmation-page-template">
+        <section>
+            <h2></h2>
+            <p class="number"></p>
+            <ul></ul>
+            <p class="total"></p>
+            <a href="/" class="back">Back to menu</a>
+        </section>
     </template>
 </body>
 </html>

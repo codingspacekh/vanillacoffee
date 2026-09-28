@@ -30,6 +30,9 @@ const Router = {
             case "/order":
                 pageElement = document.createElement("order-page");
                 break;
+            case "/order/confirmed":
+                pageElement = document.createElement("confirmation-page");
+                break;
             default:
                 if (route.startsWith("/product-")) {
                     pageElement = document.createElement("details-page");
