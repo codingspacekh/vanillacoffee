@@ -1,20 +1,23 @@
 :host {
     max-width: 720px;
-    margin: 0 auto;
 }
 
 a.back {
     display: inline-flex;
     width: auto;
-    height: 40px;
+    height: 38px;
     margin: 0;
     gap: 6px;
     padding: 0 16px 0 12px;
-    border: 1px solid var(--border);
-    background-color: var(--surface);
+    background-color: var(--button);
     color: var(--text);
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    box-shadow: var(--shadow-sm);
+}
+
+a.back:hover {
+    color: var(--text-hover);
+    filter: none;
 }
 
 img {
@@ -23,18 +26,27 @@ img {
     aspect-ratio: 16 / 10;
     margin: 16px 0 20px;
     object-fit: cover;
+    border: 2px solid var(--border);
     border-radius: var(--radius-lg);
     background-color: var(--surface-2);
+    box-shadow: var(--shadow-card);
 }
 
+/* The product name, left-aligned rather than styled as a section title */
 h2 {
-    margin-bottom: 8px;
-    font-size: 30px;
+    width: auto;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 0;
+    font-size: 32px;
+    text-align: left;
+    text-transform: none;
 }
 
 .description {
     margin-bottom: 24px;
     color: var(--text-muted);
+    font-size: 17px;
     line-height: 1.65;
 }
 
@@ -48,38 +60,44 @@ legend {
     margin-bottom: 10px;
     padding: 0;
     color: var(--text);
-    font-weight: 700;
+    font-weight: 600;
 }
 
+/* Choices look like the category buttons; the chosen one is highlighted */
 fieldset label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     margin: 0 8px 8px 0;
-    padding: 8px 14px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background-color: var(--surface);
+    padding: 6px 12px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--button);
     color: var(--text);
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
 }
 
+fieldset label:hover {
+    color: var(--text-hover);
+}
+
 fieldset label:has(input:checked) {
-    border-color: var(--primary);
+    border-color: var(--accent);
     background-color: var(--accent-soft);
+    color: var(--text);
 }
 
 fieldset input {
     margin: 0;
-    accent-color: var(--primary);
+    accent-color: var(--accent);
 }
 
 .extra {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
 }
 
 /* The price and button stay visible while choosing options */
@@ -90,17 +108,17 @@ fieldset input {
     align-items: center;
     gap: 16px;
     margin-top: 12px;
-    padding: 10px 10px 10px 22px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
+    padding: 10px 10px 10px 20px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
     background-color: var(--surface);
     box-shadow: var(--shadow-md);
 }
 
 .price {
     color: var(--text);
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 20px;
+    font-weight: 600;
     white-space: nowrap;
 }
 
@@ -108,13 +126,13 @@ button.add-to-cart {
     flex: 1;
     height: 48px;
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-sm);
     background-color: var(--primary);
     color: var(--on-primary);
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 button.add-to-cart:hover {
-    filter: brightness(1.08);
+    filter: brightness(1.1);
 }

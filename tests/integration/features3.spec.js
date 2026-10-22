@@ -8,8 +8,8 @@ const card = (page, name) => menu(page).locator("product-item").filter({ has: pa
 const themeButton = page => page.locator("#theme");
 const bodyBackground = page => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
 
-const LIGHT_BG = "rgb(250, 247, 242)";
-const DARK_BG = "rgb(23, 18, 16)";
+const LIGHT_BG = "rgb(242, 245, 244)";
+const DARK_BG = "rgb(54, 59, 78)";
 
 test.beforeEach(async ({ page }) => {
     page.errors = [];

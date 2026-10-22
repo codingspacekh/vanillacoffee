@@ -1,6 +1,6 @@
 // Bump the version whenever the precache list changes; old caches are
 // deleted when the new worker activates.
-const CACHE = "coffeemasters-v7";
+const CACHE = "coffeemasters-v8";
 
 const PRECACHE = [
     "/",

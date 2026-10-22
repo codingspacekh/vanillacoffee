@@ -1,37 +1,37 @@
 :host {
     max-width: 640px;
-    margin: 0 auto;
 }
 
+/* Title centred, with the points balance as a tag below it */
 .heading {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .heading h2 {
-    margin: 0;
+    margin: 0 auto;
 }
 
 .balance {
-    padding: 6px 12px;
-    border-radius: 999px;
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
     background-color: var(--accent-soft);
     color: var(--accent);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     white-space: nowrap;
 }
 
 article {
-    margin-bottom: 14px;
-    padding: 16px 18px;
+    margin-bottom: 16px;
+    padding: 14px 16px;
     background-color: var(--surface);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-card);
 }
 
 header, footer {
@@ -43,7 +43,8 @@ header, footer {
 
 .number {
     color: var(--text);
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 600;
 }
 
 time {
@@ -52,27 +53,32 @@ time {
 }
 
 .items {
-    margin: 8px 0 14px;
+    margin: 8px 0 12px;
     color: var(--text-muted);
+}
+
+footer {
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
 }
 
 .total {
     color: var(--text);
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 19px;
+    font-weight: 600;
 }
 
 button.reorder {
-    height: 40px;
-    padding: 0 20px;
+    height: 38px;
+    padding: 0 16px;
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-sm);
     background-color: var(--primary);
     color: var(--on-primary);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 button.reorder:hover {
-    filter: brightness(1.08);
+    filter: brightness(1.1);
 }
