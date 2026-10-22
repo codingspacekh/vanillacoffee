@@ -19,15 +19,9 @@ export function loadData() {
 }
 
 export async function getProductById(id) {
-    if (app.store.menu==null) {
+    if (app.store.menu == null) {
         await loadData();
     }
-    for (let c of app.store.menu) {
-        for (let p of c.products) {
-            if (p.id==id) {
-                return p;
-            }
-        }
-    }
-    return null;
+    // Loose equality: ids from the URL or a dataset are strings
+    return app.store.menu.flatMap(c => c.products).find(p => p.id == id) ?? null;
 }

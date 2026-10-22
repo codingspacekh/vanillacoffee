@@ -2,6 +2,7 @@ import { adoptStyles } from "../services/Styles.js";
 import { orderTotals, placeOrder } from "../services/Order.js";
 import { hasReward, REWARD_POINTS, rewardItem } from "../services/Loyalty.js";
 import { t } from "../services/I18n.js";
+import { formatPrice } from "../services/Money.js";
 
 // Each returns an error message, or "" when the field is valid
 const validators = {
@@ -46,8 +47,8 @@ export class OrderPage extends HTMLElement {
 
     constructor() {
         super();
-    
-        this.root = this.attachShadow({ mode: "open" });    
+
+        this.root = this.attachShadow({ mode: "open" });
         const section = document.createElement("section");
         this.root.appendChild(section);
         adoptStyles(this.root, "/styles/shared.css", "/styles/OrderPage.css");
@@ -58,42 +59,39 @@ export class OrderPage extends HTMLElement {
                 app.router.go("/");
             }
         });
-    }   
-  
+    }
+
     connectedCallback() {
-      window.addEventListener("appcartchange", this.onCartChange);
-      this.render();
+        window.addEventListener("appcartchange", this.onCartChange);
+        this.render();
     }
 
     disconnectedCallback() {
-      window.removeEventListener("appcartchange", this.onCartChange);
+        window.removeEventListener("appcartchange", this.onCartChange);
     }
-  
-    render() {        
 
-      let section = this.root.querySelector("section");   
-      if (app.store.cart.length==0) {     
+    render() {
+        const section = this.root.querySelector("section");
+        if (app.store.cart.length == 0) {
+            section.innerHTML = `
+                <div class="empty-state">
+                    <span class="icon" aria-hidden="true">shopping_bag</span>
+                    <p class="empty">${t("order.empty")}</p>
+                    <a href="/" class="button">${t("order.browse")}</a>
+                </div>
+            `;
+            return;
+        }
+
         section.innerHTML = `
-            <div class="empty-state">
-                <span class="icon" aria-hidden="true">shopping_bag</span>
-                <p class="empty">${t("order.empty")}</p>
-                <a href="/" class="button">${t("order.browse")}</a>
-            </div>
-        `;
-      } else {
-        let html = `
             <h2>${t("order.title")}</h2>
-            <ul class="summary">
-            </ul>
+            <ul class="summary"></ul>
         `;
-        section.innerHTML = html;
-  
         const template = document.getElementById("order-form-template");
-        const content = template.content.cloneNode(true);
-        section.appendChild(content);
-  
-        const list = this.root.querySelector("ul");
-        for (let prodInCart of app.store.cart) {      
+        section.appendChild(template.content.cloneNode(true));
+
+        const list = section.querySelector("ul.summary");
+        for (const prodInCart of app.store.cart) {
             const item = document.createElement("cart-item");
             item.dataset.item = JSON.stringify(prodInCart);
             list.appendChild(item);
@@ -101,24 +99,21 @@ export class OrderPage extends HTMLElement {
         const { discount, total } = orderTotals(app.store.cart, reward.use);
         if (discount > 0) {
             list.insertAdjacentHTML("beforeend", `
-                  <li class='reward-line'>
-                      <p class='reward-label'>${t("loyalty.rewardLine")}</p>
-                      <p class='reward-amount'>−$${discount.toFixed(2)}</p>
-                  </li>
-              `);
+                <li class='reward-line'>
+                    <p class='reward-label'>${t("loyalty.rewardLine")}</p>
+                    <p class='reward-amount'>−${formatPrice(discount)}</p>
+                </li>
+            `);
         }
         list.insertAdjacentHTML("beforeend", `
-              <li>
-                  <p class='total'>${t("order.total")}</p>
-                  <p class='price-total'>$${total.toFixed(2)}</p>
-              </li>                
-          `);            
-        section.querySelector("form").before(this.renderLoyalty());
-      }
-
-      this.setFormBindings(this.root.querySelector("form"));
-
-
+            <li>
+                <p class='total'>${t("order.total")}</p>
+                <p class='price-total'>${formatPrice(total)}</p>
+            </li>
+        `);
+        const form = section.querySelector("form");
+        form.before(this.renderLoyalty());
+        this.setFormBindings(form);
     }
 
     // Points progress, and the free-drink checkbox once it can be used
@@ -148,7 +143,7 @@ export class OrderPage extends HTMLElement {
             label.className = "reward";
             label.innerHTML = `<input type="checkbox" id="use-reward"> <span></span>`;
             label.querySelector("span").textContent =
-                t("loyalty.useReward", { amount: `$${drink.unitPrice.toFixed(2)}` });
+                t("loyalty.useReward", { amount: formatPrice(drink.unitPrice) });
             const checkbox = label.querySelector("input");
             checkbox.checked = reward.use;
             checkbox.addEventListener("change", () => {
@@ -181,46 +176,44 @@ export class OrderPage extends HTMLElement {
     }
 
     setFormBindings(form) {
-        if (form) {
-            const inputs = Array.from(form.elements).filter(element => element.name);
+        const inputs = Array.from(form.elements).filter(element => element.name);
 
-            form.addEventListener("submit", event => {
-                event.preventDefault();
-                const invalid = inputs.filter(input => !this.validate(input));
-                if (invalid.length > 0) {
-                    invalid[0].focus();
-                    return;
+        form.addEventListener("submit", event => {
+            event.preventDefault();
+            const invalid = inputs.filter(input => !this.validate(input));
+            if (invalid.length > 0) {
+                invalid[0].focus();
+                return;
+            }
+            const customer = Object.fromEntries(new FormData(form));
+            this.#user.name = "";
+            this.#user.email = "";
+            this.#user.phone = "";
+            placeOrder(customer, { useReward: reward.use });
+            reward.use = false;
+            app.router.go("/order/confirmed");
+        })
+
+        inputs.forEach(element => {
+            // Restore what the user already typed before this render
+            element.value = this.#user[element.name];
+            element.addEventListener("change", () => {
+                this.#user[element.name] = element.value;
+            })
+            // Check a field once the user leaves it, and re-check
+            // while they fix one that is already marked invalid
+            element.addEventListener("blur", () => {
+                if (element.value) {
+                    this.validate(element);
                 }
-                const customer = Object.fromEntries(new FormData(form));
-                this.#user.name = "";
-                this.#user.email = "";
-                this.#user.phone = "";
-                placeOrder(customer, { useReward: reward.use });
-                reward.use = false;
-                app.router.go("/order/confirmed");
             })
-
-            inputs.forEach( element => {
-                // Restore what the user already typed before this render
-                element.value = this.#user[element.name];
-                element.addEventListener("change", () => {
-                    this.#user[element.name] = element.value;
-                })
-                // Check a field once the user leaves it, and re-check
-                // while they fix one that is already marked invalid
-                element.addEventListener("blur", () => {
-                    if (element.value) {
-                        this.validate(element);
-                    }
-                })
-                element.addEventListener("input", () => {
-                    if (element.hasAttribute("aria-invalid")) {
-                        this.validate(element);
-                    }
-                })
+            element.addEventListener("input", () => {
+                if (element.hasAttribute("aria-invalid")) {
+                    this.validate(element);
+                }
             })
-        }
+        })
     }
-  }
-  
-  customElements.define("order-page", OrderPage);
+}
+
+customElements.define("order-page", OrderPage);

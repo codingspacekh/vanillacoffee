@@ -1,5 +1,13 @@
 import { t } from "./I18n.js";
 
+// Fixed routes and the page element each one shows
+const pages = {
+    "/": "menu-page",
+    "/order": "order-page",
+    "/orders": "orders-page",
+    "/order/confirmed": "confirmation-page",
+};
+
 const Router = {
     init: () => {
         document.querySelectorAll("a.navlink").forEach(a => {
@@ -18,60 +26,43 @@ const Router = {
         history.replaceState({ route: location.pathname }, '', location.pathname + location.search);
         Router.go(location.pathname, false);
     },
-    go: (route, addToHistory=true) => {
-        console.log(`Going to ${route}`);
 
+    go: (route, addToHistory=true) => {
         if (addToHistory) {
             history.pushState({ route }, '', route);
         }
         let pageElement = null;
-        switch (route) {
-            case "/":
-                pageElement = document.createElement("menu-page");
-                break;
-            case "/order":
-                pageElement = document.createElement("order-page");
-                break;
-            case "/orders":
-                pageElement = document.createElement("orders-page");
-                break;
-            case "/order/confirmed":
-                pageElement = document.createElement("confirmation-page");
-                break;
-            default:
-                if (route.startsWith("/product-")) {
-                    pageElement = document.createElement("details-page");
-                    const paramId = route.substring(route.lastIndexOf("-")+1);
-                    pageElement.dataset.productId = paramId;
-                }
+        if (pages[route]) {
+            pageElement = document.createElement(pages[route]);
+        } else if (route.startsWith("/product-")) {
+            pageElement = document.createElement("details-page");
+            pageElement.dataset.productId = route.substring(route.lastIndexOf("-")+1);
         }
         Router.markCurrentTab(route);
+
+        const main = document.querySelector("main");
         if (pageElement) {
-            const cache = document.querySelector("main");
-            cache.innerHTML = "";
-            cache.appendChild(pageElement);
+            main.replaceChildren(pageElement);
             window.scrollTo(0, 0);
-
         } else {
-            // 404
-            document.querySelector("main").textContent = t("notFound")
-
+            main.textContent = t("notFound");
         }
-    }
+    },
+
+    // Highlights the tab for the current page (product pages belong to Menu)
+    markCurrentTab: route => {
+        document.querySelectorAll("a.navlink").forEach(link => {
+            const href = link.getAttribute("href");
+            const current = href == "/"
+                ? route == "/" || route.startsWith("/product-")
+                : route == href;
+            if (current) {
+                link.setAttribute("aria-current", "page");
+            } else {
+                link.removeAttribute("aria-current");
+            }
+        });
+    },
 }
-// Highlights the tab for the current page (product pages belong to Menu)
-Router.markCurrentTab = route => {
-    document.querySelectorAll("a.navlink").forEach(link => {
-        const href = link.getAttribute("href");
-        const current = href == "/"
-            ? route == "/" || route.startsWith("/product-")
-            : route == href;
-        if (current) {
-            link.setAttribute("aria-current", "page");
-        } else {
-            link.removeAttribute("aria-current");
-        }
-    });
-};
 
 export default Router;

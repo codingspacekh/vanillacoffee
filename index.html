@@ -23,7 +23,7 @@
     <link rel="preload" href="/styles/MenuPage.css" as="fetch" crossorigin>
     <link rel="preload" href="/data/menu.json" as="fetch" crossorigin>
 
-    <script src="/app.js" defer type="module"></script>
+    <script src="/app.js" type="module"></script>
 
     <link rel="stylesheet" href="/styles/global.css">
     <link rel="manifest" href="/app.webmanifest">
@@ -81,7 +81,7 @@
 
     <template id="product-item-template">
         <article>
-            <a href="#">
+            <a>
                 <button type="button" class="favourite" aria-pressed="false"></button>
                 <img alt="" loading="lazy">
                 <section>
@@ -114,7 +114,7 @@
     </template>
 
     <template id="details-page-template">
-        <a href="#" class="back" onclick="app.router.go('/'); event.preventDefault()">
+        <a href="/" class="back">
             <span class="icon" aria-hidden="true">arrow_back</span>
             <span data-i18n="details.back">Back</span>
         </a>
@@ -124,7 +124,7 @@
         <form class="options"></form>
         <div class="buy-bar">
             <p class="price"></p>
-            <button class="add-to-cart" data-i18n="details.addToCart">Add to cart</button>
+            <button type="button" class="add-to-cart" data-i18n="details.addToCart">Add to cart</button>
         </div>
     </template>
 
@@ -136,9 +136,9 @@
                 <p class='options'></p>
             </div>
             <p class='toolbar'>
-                <a href="#" class="delete-button">
+                <button type="button" class="delete-button">
                     <span class="icon" aria-hidden="true">delete</span>
-                </a>
+                </button>
             </p>
             <p class='quantity'>
                 <button type="button" class="decrease"><span class="icon" aria-hidden="true">remove</span></button>

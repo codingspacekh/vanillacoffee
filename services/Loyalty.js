@@ -1,10 +1,8 @@
+import { roundCents } from "./Money.js";
+
 // One point per whole dollar paid; REWARD_POINTS buys one free drink,
 // worth the most expensive drink in the cart (options included).
 export const REWARD_POINTS = 50;
-
-export function roundCents(amount) {
-    return Math.round(amount * 100) / 100;
-}
 
 export function pointsFor(total) {
     return Math.floor(roundCents(total));

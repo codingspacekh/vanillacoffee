@@ -1,4 +1,5 @@
 import { t } from "./I18n.js";
+import { roundCents } from "./Money.js";
 
 // Product options (size, milk, ...) are groups of choices; the first
 // choice of each group is the default and carries no extra cost.
@@ -7,12 +8,15 @@ function groups(product) {
     return product.options ?? [];
 }
 
+function chosenChoice(group, options) {
+    return group.choices.find(c => c.label == options[group.name]);
+}
+
 // Fills in defaults and drops choices the product doesn't offer
 export function resolveOptions(product, options = {}) {
     const resolved = {};
     for (const group of groups(product)) {
-        const chosen = group.choices.find(c => c.label == options[group.name]);
-        resolved[group.name] = (chosen ?? group.choices[0]).label;
+        resolved[group.name] = (chosenChoice(group, options) ?? group.choices[0]).label;
     }
     return resolved;
 }
@@ -26,10 +30,9 @@ function nonDefaultChoices(product, options) {
 export function unitPrice(product, options) {
     let price = product.price;
     for (const group of groups(product)) {
-        const chosen = group.choices.find(c => c.label == options[group.name]);
-        price += chosen?.price ?? 0;
+        price += chosenChoice(group, options)?.price ?? 0;
     }
-    return Math.round(price * 100) / 100;
+    return roundCents(price);
 }
 
 // Identifies a cart line: the same product with the same choices

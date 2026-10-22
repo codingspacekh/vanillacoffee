@@ -2,6 +2,7 @@ import { adoptStyles } from "../services/Styles.js";
 import { describeOptions } from "../services/Options.js";
 import { reorder } from "../services/Order.js";
 import { formatDate, localized, t } from "../services/I18n.js";
+import { formatPrice } from "../services/Money.js";
 
 export class OrdersPage extends HTMLElement {
     constructor() {
@@ -16,7 +17,9 @@ export class OrdersPage extends HTMLElement {
                 app.router.go("/");
             }
             const button = event.target.closest("button.reorder");
-            if (button) {
+            // Disabled while the menu loads, so a double click adds it once
+            if (button && !button.disabled) {
+                button.disabled = true;
                 const order = app.store.orders.find(o => o.number == button.dataset.number);
                 await reorder(order);
                 app.router.go("/order");
@@ -69,7 +72,7 @@ export class OrdersPage extends HTMLElement {
                 const options = describeOptions(item.product, item.options);
                 return `${item.quantity}x ${localized(item.product)}${options ? ` (${options})` : ""}`;
             }).join(", ");
-            article.querySelector(".total").textContent = `$${order.total.toFixed(2)}`;
+            article.querySelector(".total").textContent = formatPrice(order.total);
             const button = article.querySelector("button.reorder");
             button.dataset.number = order.number;
             button.textContent = t("orders.reorder");

@@ -49,34 +49,36 @@ const Store = {
     points: Number.isInteger(savedPoints) && savedPoints >= 0 ? savedPoints : 0,
 }
 
+// Kept in memory too, so numbers still go up when storage is unavailable;
+// re-reading storage picks up orders placed in another tab
+let lastOrderNumber = 1000;
+
 export function nextOrderNumber() {
-    const number = load(ORDER_NUMBER_KEY, 1000) + 1;
-    save(ORDER_NUMBER_KEY, number);
-    return number;
+    lastOrderNumber = Math.max(load(ORDER_NUMBER_KEY, 1000), lastOrderNumber) + 1;
+    save(ORDER_NUMBER_KEY, lastOrderNumber);
+    return lastOrderNumber;
 }
+
+// What happens when each property is set: where it is saved, and which
+// event tells the pages it changed
+const effects = {
+    menu: { event: "appmenuchange" },
+    cart: { key: CART_KEY, event: "appcartchange" },
+    lastOrder: { key: LAST_ORDER_KEY },
+    orders: { key: ORDERS_KEY },
+    points: { key: POINTS_KEY },
+    favourites: { key: FAVOURITES_KEY, event: "appfavouriteschange" },
+};
 
 const proxiedStore = new Proxy(Store, {
     set(target, property, value) {
         target[property] = value;
-        if (property=="menu") {
-            window.dispatchEvent(new Event("appmenuchange"));
+        const { key, event } = effects[property] ?? {};
+        if (key) {
+            save(key, value);
         }
-        if (property=="cart") {
-            save(CART_KEY, value);
-            window.dispatchEvent(new Event("appcartchange"));
-        }
-        if (property=="lastOrder") {
-            save(LAST_ORDER_KEY, value);
-        }
-        if (property=="orders") {
-            save(ORDERS_KEY, value);
-        }
-        if (property=="points") {
-            save(POINTS_KEY, value);
-        }
-        if (property=="favourites") {
-            save(FAVOURITES_KEY, value);
-            window.dispatchEvent(new Event("appfavouriteschange"));
+        if (event) {
+            window.dispatchEvent(new Event(event));
         }
         return true;
     }

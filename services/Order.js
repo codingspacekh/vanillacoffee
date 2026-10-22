@@ -2,7 +2,8 @@ import { getProductById } from "./Menu.js";
 import { nextOrderNumber } from "./Store.js";
 import { createItem } from "./Options.js";
 import { localized, t } from "./I18n.js";
-import { pointsFor, REWARD_POINTS, rewardDiscount, roundCents } from "./Loyalty.js";
+import { pointsFor, REWARD_POINTS, rewardDiscount } from "./Loyalty.js";
+import { roundCents } from "./Money.js";
 
 const MAX_ORDERS = 50;
 

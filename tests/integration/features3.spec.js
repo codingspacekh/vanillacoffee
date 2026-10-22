@@ -221,7 +221,7 @@ test.describe("14. Loyalty points", () => {
             await addAndOpenOrder(page, "Cappuccino", "Croissant");
             await rewardBox(page).check();
             await expect(order(page).locator(".price-total")).toHaveText("$2.80");
-            await order(page).getByRole("link", { name: "Remove Cappuccino" }).click();
+            await order(page).getByRole("button", { name: "Remove Cappuccino" }).click();
             await expect(order(page).locator(".reward-amount")).toHaveCount(0);
             await expect(order(page).locator(".price-total")).toHaveText("$2.80");
             await checkout(page);

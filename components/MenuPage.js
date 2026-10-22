@@ -152,7 +152,7 @@ export class MenuPage extends HTMLElement {
             }
             liCategory.innerHTML = `
                 <h3></h3>
-                <ul class='category'>                    
+                <ul class='category'>
                 </ul>
             `;
             liCategory.querySelector("h3").textContent = section.name;

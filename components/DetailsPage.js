@@ -3,26 +3,32 @@ import { addToCart } from '../services/Order.js';
 import { unitPrice } from '../services/Options.js';
 import { adoptStyles } from '../services/Styles.js';
 import { localized, t } from '../services/I18n.js';
+import { formatPrice } from '../services/Money.js';
 
 export class DetailsPage extends HTMLElement {
 
     constructor() {
         super();
-    
+
         this.root = this.attachShadow({ mode: "open" });
-    
+
         const template = document.getElementById("details-page-template");
         const content = template.content.cloneNode(true);
-        this.root.appendChild(content);    
+        this.root.appendChild(content);
         adoptStyles(this.root, "/styles/shared.css", "/styles/DetailsPage.css");
 
+        this.root.querySelector("a.back").addEventListener("click", event => {
+            event.preventDefault();
+            app.router.go("/");
+        });
         this.form = this.root.querySelector("form.options");
         this.form.addEventListener("change", () => this.renderPrice());
-        this.root.querySelector("button").addEventListener("click", ()=> {
-            addToCart(this.product.id, this.selectedOptions()); 
+        // Wait for the cart to update, so the order page doesn't flash empty
+        this.root.querySelector("button.add-to-cart").addEventListener("click", async () => {
+            await addToCart(this.product.id, this.selectedOptions());
             app.router.go('/order');
         })
-    }   
+    }
 
     selectedOptions() {
         return Object.fromEntries(new FormData(this.form));
@@ -51,7 +57,7 @@ export class DetailsPage extends HTMLElement {
                 if (choice.price > 0) {
                     const extra = document.createElement("span");
                     extra.className = "extra";
-                    extra.textContent = `+$${choice.price.toFixed(2)}`;
+                    extra.textContent = `+${formatPrice(choice.price)}`;
                     label.append(" ", extra);
                 }
                 fieldset.appendChild(label);

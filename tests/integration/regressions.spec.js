@@ -170,3 +170,50 @@ test("placing an order empties the cart", async ({ page }) => {
     await expect(order(page).locator("cart-item")).toHaveCount(1);
     await expect(order(page).locator("input[name=name]")).toHaveValue("");
 });
+
+test("product cards link to their page, so they can open in a new tab", async ({ page }) => {
+    await page.goto("/");
+    await expect(menu(page).locator("product-item a").first()).toHaveAttribute("href", "/product-11");
+});
+
+test("order numbers still increase when storage can't be written", async ({ page }) => {
+    await page.addInitScript(() => {
+        Storage.prototype.setItem = () => { throw new Error("QuotaExceededError"); };
+    });
+    await page.goto("/");
+    const numbers = [];
+    for (let i = 0; i < 2; i++) {
+        await page.locator("#linkHome").click();
+        await menu(page).locator("product-item").first().getByRole("button", { name: "Add" }).click();
+        await page.locator("#linkOrder").click();
+        await order(page).getByLabel("Your Name").fill("Alex");
+        await order(page).getByLabel("Your Phone Number").fill("012 345 678");
+        await order(page).getByRole("button", { name: "Place Order" }).click();
+        const text = await page.locator("confirmation-page .number").textContent();
+        numbers.push(Number(text.replace(/\D/g, "")));
+    }
+    expect(numbers[1]).toBe(numbers[0] + 1);
+});
+
+test("double-clicking Reorder adds the order once", async ({ page }) => {
+    await page.addInitScript(() => {
+        if (!localStorage.getItem("cm-orders")) {
+            localStorage.setItem("cm-orders", JSON.stringify([{
+                number: 1001,
+                placedAt: new Date().toISOString(),
+                customer: { name: "Alex" },
+                items: [{ product: { id: 11, name: "Black Americano", price: 1.5 }, quantity: 1 }],
+                total: 1.5,
+            }]));
+        }
+    });
+    // A slow menu keeps the first click busy while the second one lands
+    await page.route("/data/menu.json", async route => {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await route.continue();
+    });
+    await page.goto("/orders");
+    await page.locator("orders-page").getByRole("button", { name: "Reorder order #1001" }).dblclick();
+    await expect(page).toHaveURL("/order");
+    await expect(badge(page)).toHaveText("1");
+});

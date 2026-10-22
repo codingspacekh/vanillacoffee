@@ -2,6 +2,7 @@ import { adoptStyles } from "../services/Styles.js";
 import { describeOptions } from "../services/Options.js";
 import { localized, t } from "../services/I18n.js";
 import { hasReward } from "../services/Loyalty.js";
+import { formatPrice } from "../services/Money.js";
 
 export class ConfirmationPage extends HTMLElement {
     constructor() {
@@ -48,7 +49,7 @@ export class ConfirmationPage extends HTMLElement {
             li.querySelector(".qty").textContent = `${quantity}x`;
             li.querySelector(".name").textContent = localized(product);
             li.querySelector(".options").textContent = describeOptions(product, options);
-            li.querySelector(".price").textContent = `$${(quantity * unitPrice).toFixed(2)}`;
+            li.querySelector(".price").textContent = formatPrice(quantity * unitPrice);
             list.appendChild(li);
         }
 
@@ -57,11 +58,11 @@ export class ConfirmationPage extends HTMLElement {
             li.className = "reward-line";
             li.innerHTML = `<p class="reward-label"></p><p class="price"></p>`;
             li.querySelector(".reward-label").textContent = t("loyalty.rewardLine");
-            li.querySelector(".price").textContent = `−$${order.discount.toFixed(2)}`;
+            li.querySelector(".price").textContent = `−${formatPrice(order.discount)}`;
             list.appendChild(li);
         }
 
-        this.root.querySelector(".total").textContent = t("confirmation.total", { total: `$${order.total.toFixed(2)}` });
+        this.root.querySelector(".total").textContent = t("confirmation.total", { total: formatPrice(order.total) });
 
         // Orders placed before loyalty points existed have no points info
         if (order.pointsEarned != null) {
