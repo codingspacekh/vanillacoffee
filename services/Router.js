@@ -5,6 +5,7 @@ const pages = {
     "/": "menu-page",
     "/order": "order-page",
     "/orders": "orders-page",
+    "/favourites": "favourites-page",
     "/order/confirmed": "confirmation-page",
 };
 

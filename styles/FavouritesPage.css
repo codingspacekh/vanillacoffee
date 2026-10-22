@@ -1,0 +1,13 @@
+:host {
+    max-width: 1120px;
+}
+
+.loading {
+    padding: 40px 16px;
+    text-align: center;
+}
+
+.empty-state .hint {
+    margin-top: 6px;
+    color: var(--text-muted);
+}

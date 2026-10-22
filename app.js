@@ -13,6 +13,7 @@ import './components/CartItem.js';
 import './components/ConfirmationPage.js';
 import './components/ToastMessage.js';
 import './components/OrdersPage.js';
+import './components/FavouritesPage.js';
 
 window.app = {}
 app.store = Store;

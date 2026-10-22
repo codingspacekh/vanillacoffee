@@ -246,33 +246,32 @@ test.describe("8. Order history", () => {
 });
 
 test.describe("9. Favourites", () => {
-    test("heart toggles a Favourites section at the top", async ({ page }) => {
+    test("the heart toggles without navigating, and the menu has no favourites section", async ({ page }) => {
         await page.goto("/");
         const heart = card(page, "Cold Brew").getByRole("button", { name: "Favourite Cold Brew" });
         await expect(heart).toHaveAttribute("aria-pressed", "false");
         await heart.click();
 
-        await expect(menu(page).locator("h3").first()).toHaveText("Favourites");
-        await expect(menu(page).locator(".favourites product-item h4")).toHaveText(["Cold Brew"]);
         await expect(card(page, "Cold Brew").getByRole("button", { name: "Favourite Cold Brew" }))
             .toHaveAttribute("aria-pressed", "true");
+        // Favourites have their own page; the menu keeps its usual order
+        await expect(menu(page).locator("h3").first()).toHaveText("HOT COFFEE");
+        await expect(menu(page).locator("product-item h4", { hasText: "Cold Brew" })).toHaveCount(1);
         // Toggling does not navigate or add to the cart
         await expect(page).toHaveURL("/");
         await expect(badge(page)).toBeHidden();
 
-        await menu(page).locator(".favourites").getByRole("button", { name: "Favourite Cold Brew" }).click();
-        await expect(menu(page).locator(".favourites")).toHaveCount(0);
-        await expect(menu(page).locator("h3").first()).toHaveText("HOT COFFEE");
+        await card(page, "Cold Brew").getByRole("button", { name: "Favourite Cold Brew" }).click();
+        await expect(card(page, "Cold Brew").getByRole("button", { name: "Favourite Cold Brew" }))
+            .toHaveAttribute("aria-pressed", "false");
     });
 
     test("focus stays on the heart after toggling", async ({ page }) => {
         await page.goto("/");
         await card(page, "Macchiato").getByRole("button", { name: "Favourite Macchiato" }).click();
-        const focused = await page.evaluate(() => {
-            const el = document.querySelector("menu-page").shadowRoot.activeElement;
-            return [el?.getAttribute("aria-label"), !!el?.closest(".favourites")];
-        });
-        expect(focused).toEqual(["Favourite Macchiato", false]);
+        const focused = await page.evaluate(() =>
+            document.querySelector("menu-page").shadowRoot.activeElement?.getAttribute("aria-label"));
+        expect(focused).toBe("Favourite Macchiato");
     });
 
     test("favourites survive a reload", async ({ page }) => {
@@ -280,24 +279,10 @@ test.describe("9. Favourites", () => {
         await card(page, "Croissant").getByRole("button", { name: "Favourite Croissant" }).click();
         await card(page, "Green Tea").getByRole("button", { name: "Favourite Green Tea" }).click();
         await page.reload();
-        await expect(menu(page).locator(".favourites product-item h4")).toHaveText(["Green Tea", "Croissant"]);
-    });
-
-    test("favourites follow the search and hide for a category", async ({ page }) => {
-        await page.goto("/");
-        await card(page, "Croissant").getByRole("button", { name: "Favourite Croissant" }).click();
-        await card(page, "Green Tea").getByRole("button", { name: "Favourite Green Tea" }).click();
-        await search(page).fill("tea");
-        await expect(menu(page).locator(".favourites product-item h4")).toHaveText(["Green Tea"]);
-        await chip(page, "TEA").click();
-        await expect(menu(page).locator(".favourites")).toHaveCount(0);
-    });
-
-    test("Add works from the Favourites section", async ({ page }) => {
-        await page.goto("/");
-        await card(page, "Croissant").getByRole("button", { name: "Favourite Croissant" }).click();
-        await menu(page).locator(".favourites").getByRole("button", { name: "Add" }).click();
-        await expect(badge(page)).toHaveText("1");
+        await expect(card(page, "Croissant").getByRole("button", { name: "Favourite Croissant" }))
+            .toHaveAttribute("aria-pressed", "true");
+        await expect(card(page, "Green Tea").getByRole("button", { name: "Favourite Green Tea" }))
+            .toHaveAttribute("aria-pressed", "true");
     });
 });
 

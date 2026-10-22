@@ -1,5 +1,4 @@
 import { adoptStyles } from "../services/Styles.js";
-import { isFavourite } from "../services/Favourites.js";
 import { localized, t } from "../services/I18n.js";
 
 const slug = name => name.toLowerCase().replace(/\s+/g, "-");
@@ -8,8 +7,9 @@ export class MenuPage extends HTMLElement {
     constructor() {
         super();
         this.root = this.attachShadow({ mode: 'open' });
-        adoptStyles(this.root, "/styles/shared.css", "/styles/MenuPage.css");
+        adoptStyles(this.root, "/styles/shared.css", "/styles/ProductGrid.css", "/styles/MenuPage.css");
         this.onMenuChange = () => this.render();
+        // Re-render so the hearts show the change
         this.onFavouritesChange = () => this.renderList();
     }
 
@@ -91,7 +91,7 @@ export class MenuPage extends HTMLElement {
         }));
     }
 
-    // The sections to show: favourites first, then each matching category
+    // The categories to show, each with its matching products
     sections() {
         const query = this.query.trim().toLowerCase();
         // Matches the English and the translated names
@@ -110,12 +110,6 @@ export class MenuPage extends HTMLElement {
                 sections.push({ name: localized(category), id: slug(category.name), products });
             }
         }
-        if (!this.category) {
-            const favourites = sections.flatMap(s => s.products).filter(p => isFavourite(p.id));
-            if (favourites.length > 0) {
-                sections.unshift({ name: t("menu.favourites"), id: "favourites", products: favourites });
-            }
-        }
         return sections;
     }
 
@@ -129,7 +123,6 @@ export class MenuPage extends HTMLElement {
         // Re-rendering replaces the buttons, so remember which one had focus
         const active = this.root.activeElement?.closest("product-item button");
         const focus = active && {
-            section: active.closest("li[data-section]").dataset.section,
             productId: active.closest("product-item").dataset.productId,
             button: active.classList.contains("favourite") ? "favourite" : "add",
         };
@@ -147,12 +140,9 @@ export class MenuPage extends HTMLElement {
         for (const section of sections) {
             const liCategory = document.createElement("li");
             liCategory.dataset.section = section.id;
-            if (section.id == "favourites") {
-                liCategory.className = "favourites";
-            }
             liCategory.innerHTML = `
                 <h3></h3>
-                <ul class='category'>
+                <ul class='product-grid'>
                 </ul>
             `;
             liCategory.querySelector("h3").textContent = section.name;
@@ -166,9 +156,7 @@ export class MenuPage extends HTMLElement {
         }
 
         if (focus) {
-            const button = `product-item[data-product-id="${focus.productId}"] button.${focus.button}`;
-            (this.root.querySelector(`li[data-section="${focus.section}"] ${button}`)
-                ?? this.root.querySelector(button))?.focus();
+            this.root.querySelector(`product-item[data-product-id="${focus.productId}"] button.${focus.button}`)?.focus();
         }
     }
 }

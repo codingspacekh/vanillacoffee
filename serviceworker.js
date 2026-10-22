@@ -1,6 +1,6 @@
 // Bump the version whenever the precache list changes; old caches are
 // deleted when the new worker activates.
-const CACHE = "coffeemasters-v8";
+const CACHE = "coffeemasters-v9";
 
 const PRECACHE = [
     "/",
@@ -12,10 +12,10 @@ const PRECACHE = [
     ...["blackamericano", "blacktea", "cappuccino", "coldbrew", "croissant", "flatwhite",
         "frappuccino", "greentea", "icedcoffee", "macchiato", "muffin"]
         .map(name => `/data/images/${name}.png`),
-    ...["CartItem", "ConfirmationPage", "DetailsPage", "MenuPage", "OrderPage", "OrdersPage",
+    ...["CartItem", "ConfirmationPage", "DetailsPage", "FavouritesPage", "MenuPage", "OrderPage", "OrdersPage",
         "ProductItem", "ToastMessage"]
         .map(name => `/components/${name}.js`),
-    ...["ConfirmationPage", "DetailsPage", "MenuPage", "OrderPage", "OrdersPage"]
+    ...["ConfirmationPage", "DetailsPage", "FavouritesPage", "MenuPage", "OrderPage", "OrdersPage", "ProductGrid"]
         .map(name => `/styles/${name}.css`),
     "/styles/global.css",
     "/styles/shared.css",

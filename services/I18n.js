@@ -9,6 +9,7 @@ export const dictionaries = {
     en: {
         "nav.main": "Main",
         "nav.menu": "Menu",
+        "nav.favourites": "Favourites",
         "nav.historyShort": "History",
         "nav.cartShort": "Cart",
         "nav.orders": "Order history",
@@ -23,7 +24,6 @@ export const dictionaries = {
         "menu.search": "Search the menu",
         "menu.categories": "Categories",
         "menu.all": "All",
-        "menu.favourites": "Favourites",
         "menu.loading": "Loading...",
         "menu.noResults": "No items match \"{query}\"",
         "menu.clearFilters": "Clear filters",
@@ -79,6 +79,10 @@ export const dictionaries = {
         "orders.reorderLabel": "Reorder order #{number}",
         "orders.added": "Order #{number} added to cart",
 
+        "favourites.title": "Favourites",
+        "favourites.empty": "No favourites yet",
+        "favourites.hint": "Tap the ♡ on any item to save it here.",
+
         "loyalty.label": "Loyalty points",
         "loyalty.points": "{points} / {goal} points",
         "loyalty.remaining": "{remaining} more points for a free drink",
@@ -96,6 +100,7 @@ export const dictionaries = {
     km: {
         "nav.main": "ការរុករកមេ",
         "nav.menu": "ម៉ឺនុយ",
+        "nav.favourites": "ចំណូលចិត្ត",
         "nav.historyShort": "ប្រវត្តិ",
         "nav.cartShort": "កន្ត្រក",
         "nav.orders": "ប្រវត្តិការបញ្ជាទិញ",
@@ -110,7 +115,6 @@ export const dictionaries = {
         "menu.search": "ស្វែងរកក្នុងម៉ឺនុយ",
         "menu.categories": "ប្រភេទ",
         "menu.all": "ទាំងអស់",
-        "menu.favourites": "ចំណូលចិត្ត",
         "menu.loading": "កំពុងផ្ទុក...",
         "menu.noResults": "រកមិនឃើញអ្វីដែលត្រូវនឹង \"{query}\" ទេ",
         "menu.clearFilters": "សម្អាតតម្រង",
@@ -165,6 +169,10 @@ export const dictionaries = {
         "orders.reorder": "បញ្ជាទិញម្តងទៀត",
         "orders.reorderLabel": "បញ្ជាទិញម្តងទៀតនូវការបញ្ជាទិញ #{number}",
         "orders.added": "បានដាក់ការបញ្ជាទិញ #{number} ចូលកន្ត្រក",
+
+        "favourites.title": "ចំណូលចិត្ត",
+        "favourites.empty": "មិនទាន់មានចំណូលចិត្តនៅឡើយទេ",
+        "favourites.hint": "ចុច ♡ លើមុខទំនិញណាមួយ ដើម្បីរក្សាទុកវានៅទីនេះ។",
 
         "loyalty.label": "ពិន្ទុសន្សំ",
         "loyalty.points": "{points} / {goal} ពិន្ទុ",

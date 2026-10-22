@@ -133,6 +133,7 @@ test("stylesheets are downloaded once", async ({ page }) => {
         "/styles/DetailsPage.css",
         "/styles/MenuPage.css",
         "/styles/OrderPage.css",
+        "/styles/ProductGrid.css",
         "/styles/global.css",
         "/styles/shared.css",
     ]);
