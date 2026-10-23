@@ -82,3 +82,10 @@ button.reorder {
 button.reorder:hover {
     filter: brightness(1.1);
 }
+
+.pickup {
+    margin: -6px 0 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}

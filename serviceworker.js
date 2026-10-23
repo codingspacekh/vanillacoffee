@@ -1,6 +1,6 @@
 // Bump the version whenever the precache list changes; old caches are
 // deleted when the new worker activates.
-const CACHE = "coffeemasters-v9";
+const CACHE = "coffeemasters-v10";
 
 const PRECACHE = [
     "/",
@@ -19,7 +19,8 @@ const PRECACHE = [
         .map(name => `/styles/${name}.css`),
     "/styles/global.css",
     "/styles/shared.css",
-    ...["API", "Favourites", "I18n", "Loyalty", "Menu", "Money", "Options", "Order", "Router", "Store", "Styles", "Theme"]
+    ...["API", "Favourites", "I18n", "Loyalty", "Menu", "Money", "Options", "Order", "Pickup", "Promo",
+        "Router", "Store", "Styles", "Theme"]
         .map(name => `/services/${name}.js`),
 ];
 
@@ -38,6 +39,15 @@ self.addEventListener("activate", event => {
         caches.keys()
             .then(keys => Promise.all(keys.filter(key => key != CACHE).map(key => caches.delete(key))))
             .then(() => self.clients.claim())
+    );
+});
+
+// Tapping the "order ready" notification brings the app forward
+self.addEventListener("notificationclick", event => {
+    event.notification.close();
+    event.waitUntil(
+        self.clients.matchAll({ type: "window" })
+            .then(windows => windows[0]?.focus() ?? self.clients.openWindow("/order/confirmed"))
     );
 });
 

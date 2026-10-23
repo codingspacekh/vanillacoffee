@@ -71,7 +71,7 @@ li:last-child {
     font-weight: 600;
 }
 
-.options {
+.options, .note {
     margin-top: 2px;
     color: var(--text-muted);
     font-size: 12px;
@@ -112,4 +112,109 @@ li.reward-line .price {
     background-color: var(--accent-soft);
     color: var(--text);
     font-weight: 600;
+}
+
+.pickup {
+    margin-top: 4px;
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* Order status: three steps joined by a line that fills as they complete */
+.tracker {
+    margin-top: 20px;
+    padding: 18px;
+    background-color: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+ol.steps {
+    display: flex;
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+}
+
+ol.steps li {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border-bottom: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+ol.steps li + li::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    right: 50%;
+    width: 100%;
+    height: 3px;
+    background-color: var(--border);
+    z-index: 0;
+}
+
+ol.steps li + li.done::before, ol.steps li + li.current::before {
+    background-color: var(--primary);
+}
+
+/* Above the line, which runs between the icons' centres */
+ol.steps .icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    background-color: var(--surface-2);
+}
+
+ol.steps li.done, ol.steps li.current {
+    color: var(--text);
+}
+
+ol.steps li.done .icon, ol.steps li.current .icon {
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+
+ol.steps li.current .icon {
+    box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.status-text {
+    color: var(--text);
+    font-weight: 600;
+}
+
+button.notify {
+    height: 40px;
+    margin-top: 12px;
+    padding: 0 16px;
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+button.notify:hover {
+    background-color: var(--accent-soft);
+}
+
+.notify-on {
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 14px;
 }

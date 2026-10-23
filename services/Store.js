@@ -64,7 +64,7 @@ export function nextOrderNumber() {
 const effects = {
     menu: { event: "appmenuchange" },
     cart: { key: CART_KEY, event: "appcartchange" },
-    lastOrder: { key: LAST_ORDER_KEY },
+    lastOrder: { key: LAST_ORDER_KEY, event: "applastorderchange" },
     orders: { key: ORDERS_KEY },
     points: { key: POINTS_KEY },
     favourites: { key: FAVOURITES_KEY, event: "appfavouriteschange" },

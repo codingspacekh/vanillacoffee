@@ -116,6 +116,14 @@ test.describe("13. Dark mode", () => {
             await expect(page.locator("details-page h2")).toHaveText("Cappuccino");
             expect(await lowContrastIn(page, "details-page",
                 "h2, .description, legend, label, .extra, .price, button, a.back")).toEqual([]);
+
+            await page.locator("details-page").getByRole("button", { name: "Add to cart" }).click();
+            await order(page).getByLabel("Your Name").fill("Alex");
+            await order(page).getByLabel("Your Phone Number").fill("012 345 678");
+            await order(page).getByRole("button", { name: "Place Order" }).click();
+            await expect(confirmation(page).locator(".status-text")).not.toBeEmpty();
+            expect(await lowContrastIn(page, "confirmation-page",
+                "h2, .number, .pickup, ol.steps .label, .status-text, button, .notify-on, li p, .total, .points")).toEqual([]);
         });
     }
 });

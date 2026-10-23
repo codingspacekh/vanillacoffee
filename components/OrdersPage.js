@@ -3,6 +3,7 @@ import { describeOptions } from "../services/Options.js";
 import { reorder } from "../services/Order.js";
 import { formatDate, localized, t } from "../services/I18n.js";
 import { formatPrice } from "../services/Money.js";
+import { describePickup } from "../services/Pickup.js";
 
 export class OrdersPage extends HTMLElement {
     constructor() {
@@ -57,6 +58,7 @@ export class OrdersPage extends HTMLElement {
                     <time></time>
                 </header>
                 <p class="items"></p>
+                <p class="pickup"></p>
                 <footer>
                     <p class="total"></p>
                     <button type="button" class="reorder"></button>
@@ -69,9 +71,15 @@ export class OrdersPage extends HTMLElement {
                 time.textContent = formatDate(new Date(order.placedAt));
             }
             article.querySelector(".items").textContent = order.items.map(item => {
-                const options = describeOptions(item.product, item.options);
-                return `${item.quantity}x ${localized(item.product)}${options ? ` (${options})` : ""}`;
+                const extras = [
+                    describeOptions(item.product, item.options),
+                    item.note && t("item.note", { note: item.note }),
+                ].filter(Boolean).join(" · ");
+                return `${item.quantity}x ${localized(item.product)}${extras ? ` (${extras})` : ""}`;
             }).join(", ");
+            const pickup = article.querySelector(".pickup");
+            pickup.textContent = describePickup(order);
+            pickup.hidden = !order.pickup;
             article.querySelector(".total").textContent = formatPrice(order.total);
             const button = article.querySelector("button.reorder");
             button.dataset.number = order.number;

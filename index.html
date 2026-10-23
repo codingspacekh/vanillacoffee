@@ -23,7 +23,7 @@
     <link rel="preload" href="/styles/ProductGrid.css" as="fetch" crossorigin>
     <link rel="preload" href="/styles/MenuPage.css" as="fetch" crossorigin>
     <link rel="preload" href="/data/menu.json" as="fetch" crossorigin>
-
+121
     <script src="/app.js" type="module"></script>
 
     <link rel="stylesheet" href="/styles/global.css">
@@ -108,7 +108,7 @@
     </template>
 
     <template id="order-form-template">
-        <form novalidate>
+        <form class="customer" novalidate>
             <label for="name" data-i18n="order.name">Your Name</label>
             <input id="name" name="name" autocomplete="name" required aria-describedby="name-error">
             <p class="error" id="name-error" aria-live="polite"></p>
@@ -118,6 +118,9 @@
             <label for="email" data-i18n="order.email">Your Email</label>
             <input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-error">
             <p class="error" id="email-error" aria-live="polite"></p>
+            <label for="pickup" data-i18n="order.pickup">Pickup time</label>
+            <select id="pickup" name="pickup" aria-describedby="pickup-error"></select>
+            <p class="error" id="pickup-error" aria-live="polite"></p>
             <button type="submit" data-i18n="order.place">Place Order</button>
         </form>
     </template>
@@ -131,6 +134,8 @@
         <h2></h2>
         <p class="description"></p>
         <form class="options"></form>
+        <label for="note" class="note-label" data-i18n="details.note">Note for the barista (optional)</label>
+        <input id="note" class="note" autocomplete="off" placeholder="e.g. extra hot, no lid" data-i18n-placeholder="details.notePlaceholder">
         <div class="buy-bar">
             <p class="price"></p>
             <button type="button" class="add-to-cart" data-i18n="details.addToCart">Add to cart</button>
@@ -143,6 +148,7 @@
             <div class='details'>
                 <p class='name'></p>
                 <p class='options'></p>
+                <p class='note'></p>
             </div>
             <p class='toolbar'>
                 <button type="button" class="delete-button">
@@ -163,6 +169,13 @@
             <div class="check"><span class="icon" aria-hidden="true">check</span></div>
             <h2></h2>
             <p class="number"></p>
+            <p class="pickup"></p>
+            <div class="tracker">
+                <ol class="steps" aria-label="Order status" data-i18n-label="status.label"></ol>
+                <p class="status-text" role="status"></p>
+                <button type="button" class="notify" hidden data-i18n="status.notify">Notify me when it's ready</button>
+                <p class="notify-on" tabindex="-1" hidden data-i18n="status.notifyOn">We'll notify you when it's ready.</p>
+            </div>
             <ul></ul>
             <p class="total"></p>
             <a href="/" class="back" data-i18n="common.backToMenu">Back to menu</a>

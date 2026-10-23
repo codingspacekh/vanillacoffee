@@ -1,8 +1,10 @@
 import { adoptStyles } from "../services/Styles.js";
 import { orderTotals, placeOrder } from "../services/Order.js";
 import { hasReward, REWARD_POINTS, rewardItem } from "../services/Loyalty.js";
-import { t } from "../services/I18n.js";
-import { formatPrice } from "../services/Money.js";
+import { formatTime, t } from "../services/I18n.js";
+import { formatPrice, roundCents } from "../services/Money.js";
+import { ASAP, isValidPickup, pickupSlots } from "../services/Pickup.js";
+import { normalizeCode, promoMinimum, promoProblem } from "../services/Promo.js";
 
 // Each returns an error message, or "" when the field is valid
 const validators = {
@@ -18,6 +20,7 @@ const validators = {
             : t("order.error.phoneInvalid");
     },
     email: input => input.validity.typeMismatch ? t("order.error.email") : "",
+    pickup: input => isValidPickup(input.value) ? "" : t("order.error.pickup"),
 };
 
 // What the customer has typed so far. It outlives the page element, so the
@@ -25,11 +28,15 @@ const validators = {
 const draft = {
     name: "",
     phone: "",
-    email: ""
+    email: "",
+    pickup: ASAP,
 };
 
 // Whether the customer ticked "Use my free drink"; kept across re-renders
 const reward = { use: false };
+
+// The promo code the customer applied, kept like the reward choice
+const promo = { code: "" };
 
 export class OrderPage extends HTMLElement {
 
@@ -37,7 +44,7 @@ export class OrderPage extends HTMLElement {
     #user = new Proxy(draft, {
         set: (target, property, value) => {
             target[property] = value;
-            const form = this.root.querySelector("form");
+            const form = this.root.querySelector("form.customer");
             if (form) {
                 form.elements[property].value = value;
             }
@@ -96,12 +103,21 @@ export class OrderPage extends HTMLElement {
             item.dataset.item = JSON.stringify(prodInCart);
             list.appendChild(item);
         }
-        const { discount, total } = orderTotals(app.store.cart, reward.use);
+        const { subtotal, discount, promoAmount, total } =
+            orderTotals(app.store.cart, { useReward: reward.use, promoCode: promo.code });
         if (discount > 0) {
             list.insertAdjacentHTML("beforeend", `
                 <li class='reward-line'>
                     <p class='reward-label'>${t("loyalty.rewardLine")}</p>
                     <p class='reward-amount'>−${formatPrice(discount)}</p>
+                </li>
+            `);
+        }
+        if (promoAmount > 0) {
+            list.insertAdjacentHTML("beforeend", `
+                <li class='promo-line'>
+                    <p class='reward-label'>${t("promo.line", { code: promo.code })}</p>
+                    <p class='reward-amount'>−${formatPrice(promoAmount)}</p>
                 </li>
             `);
         }
@@ -111,9 +127,90 @@ export class OrderPage extends HTMLElement {
                 <p class='price-total'>${formatPrice(total)}</p>
             </li>
         `);
-        const form = section.querySelector("form");
-        form.before(this.renderLoyalty());
+        const form = section.querySelector("form.customer");
+        form.before(this.renderLoyalty(), this.renderPromo(roundCents(subtotal - discount)));
+        this.renderPickupSlots(form.elements.pickup);
         this.setFormBindings(form);
+    }
+
+    // The code applied, or a field to enter one. amount is what the code
+    // applies to: the total after the free drink.
+    renderPromo(amount) {
+        const panel = document.createElement("section");
+        panel.className = "promo";
+        if (promo.code) {
+            panel.innerHTML = `
+                <div class="applied">
+                    <span class="icon" aria-hidden="true">sell</span>
+                    <p class="code"></p>
+                    <button type="button" class="remove-promo"></button>
+                </div>
+                <p class="error" id="promo-error" aria-live="polite"></p>
+            `;
+            panel.querySelector(".code").textContent = t("promo.applied", { code: promo.code });
+            const remove = panel.querySelector("button.remove-promo");
+            remove.textContent = t("promo.remove");
+            remove.setAttribute("aria-label", t("promo.removeLabel", { code: promo.code }));
+            remove.addEventListener("click", () => {
+                promo.code = "";
+                this.render();
+                this.root.getElementById("promo").focus();
+            });
+            // The cart may have dropped below the code's minimum since it was applied
+            panel.querySelector(".error").textContent = this.promoError(promo.code, amount);
+            return panel;
+        }
+
+        panel.innerHTML = `
+            <form novalidate>
+                <label for="promo"></label>
+                <div class="row">
+                    <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" aria-describedby="promo-error">
+                    <button type="submit"></button>
+                </div>
+                <p class="error" id="promo-error" aria-live="polite"></p>
+            </form>
+        `;
+        panel.querySelector("label").textContent = t("promo.label");
+        panel.querySelector("button").textContent = t("promo.apply");
+        const input = panel.querySelector("input");
+        panel.querySelector("form").addEventListener("submit", event => {
+            event.preventDefault();
+            const code = normalizeCode(input.value);
+            const error = code ? this.promoError(code, amount) : t("promo.error.empty");
+            if (error) {
+                this.root.getElementById("promo-error").textContent = error;
+                input.setAttribute("aria-invalid", "true");
+                input.focus();
+                return;
+            }
+            promo.code = code;
+            this.render();
+            this.root.querySelector("button.remove-promo").focus();
+        });
+        return panel;
+    }
+
+    promoError(code, amount) {
+        const problem = promoProblem(code, amount);
+        if (problem == "unknown") {
+            return t("promo.error.unknown");
+        }
+        return problem == "minimum"
+            ? t("promo.error.minimum", { code, minimum: formatPrice(promoMinimum(code)) })
+            : "";
+    }
+
+    // ASAP and the next time slots. A slot chosen earlier stays listed even
+    // once it's no longer offered, so the choice isn't silently changed;
+    // validation says if it has become too soon.
+    renderPickupSlots(select) {
+        const slots = pickupSlots().map(date => date.toISOString());
+        if (draft.pickup != ASAP && !slots.includes(draft.pickup)) {
+            slots.unshift(draft.pickup);
+        }
+        select.replaceChildren(new Option(t("order.pickupAsap"), ASAP),
+            ...slots.map(slot => new Option(formatTime(new Date(slot)), slot)));
     }
 
     // Points progress, and the free-drink checkbox once it can be used
@@ -185,12 +282,14 @@ export class OrderPage extends HTMLElement {
                 invalid[0].focus();
                 return;
             }
-            const customer = Object.fromEntries(new FormData(form));
+            const { pickup, ...customer } = Object.fromEntries(new FormData(form));
             this.#user.name = "";
             this.#user.email = "";
             this.#user.phone = "";
-            placeOrder(customer, { useReward: reward.use });
+            this.#user.pickup = ASAP;
+            placeOrder(customer, { useReward: reward.use, promoCode: promo.code, pickup });
             reward.use = false;
+            promo.code = "";
             app.router.go("/order/confirmed");
         })
 

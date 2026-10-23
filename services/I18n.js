@@ -34,6 +34,8 @@ export const dictionaries = {
         "details.notFound": "Product not found",
         "details.price": "$ {price} ea",
         "details.addToCart": "Add to cart",
+        "details.note": "Note for the barista (optional)",
+        "details.notePlaceholder": "e.g. extra hot, no lid",
 
         "option.Size": "Size",
         "option.Milk": "Milk",
@@ -53,6 +55,7 @@ export const dictionaries = {
         "cart.increase": "Increase quantity of {name}",
         "cart.remove": "Remove {name}",
         "cart.added": "{name} added to cart",
+        "item.note": "Note: {note}",
 
         "order.empty": "Your order is empty",
         "order.browse": "Browse the menu",
@@ -66,6 +69,9 @@ export const dictionaries = {
         "order.error.phoneMissing": "Please enter your phone number",
         "order.error.phoneInvalid": "Please enter a valid phone number",
         "order.error.email": "Please enter a valid email address",
+        "order.pickup": "Pickup time",
+        "order.pickupAsap": "As soon as possible",
+        "order.error.pickup": "That time is too soon now, please choose another",
 
         "confirmation.thanks": "Thank you, {name}!",
         "confirmation.number": "Order #{number}",
@@ -92,6 +98,31 @@ export const dictionaries = {
         "loyalty.earned": "+{earned} points · You now have {balance} points",
         "loyalty.rewardReady": "You've earned a free drink! Use it on your next order.",
         "loyalty.balance": "You have {points} points",
+
+        "promo.label": "Promo code",
+        "promo.apply": "Apply",
+        "promo.remove": "Remove",
+        "promo.removeLabel": "Remove promo code {code}",
+        "promo.applied": "{code} applied",
+        "promo.line": "Promo {code}",
+        "promo.error.empty": "Please enter a promo code",
+        "promo.error.unknown": "That code isn't valid",
+        "promo.error.minimum": "{code} needs an order of {minimum} or more",
+
+        "pickup.asap": "Pickup as soon as possible",
+        "pickup.at": "Pickup at {time}",
+
+        "status.label": "Order status",
+        "status.received": "Received",
+        "status.preparing": "Preparing",
+        "status.ready": "Ready",
+        "status.receivedText": "We've got your order. Ready around {time}.",
+        "status.preparingText": "We're making your order. Ready around {time}.",
+        "status.readyText": "Your order is ready to pick up!",
+        "status.notify": "Notify me when it's ready",
+        "status.notifyOn": "We'll notify you when it's ready.",
+        "status.notificationTitle": "Order #{number} is ready",
+        "status.notificationBody": "Come and pick it up at the counter.",
 
         "footer.rights": "All rights reserved.",
 
@@ -125,6 +156,8 @@ export const dictionaries = {
         "details.notFound": "រកមិនឃើញផលិតផល",
         "details.price": "$ {price} ក្នុងមួយ",
         "details.addToCart": "ដាក់ចូលកន្ត្រក",
+        "details.note": "កំណត់សម្គាល់សម្រាប់បារីស្តា (ស្រេចចិត្ត)",
+        "details.notePlaceholder": "ឧ. ក្តៅខ្លាំង គ្មានគម្រប",
 
         "option.Size": "ទំហំ",
         "option.Milk": "ទឹកដោះគោ",
@@ -144,6 +177,7 @@ export const dictionaries = {
         "cart.increase": "បង្កើនចំនួន {name}",
         "cart.remove": "ដក {name} ចេញ",
         "cart.added": "បានដាក់ {name} ចូលកន្ត្រក",
+        "item.note": "កំណត់សម្គាល់៖ {note}",
 
         "order.empty": "ការបញ្ជាទិញរបស់អ្នកនៅទទេ",
         "order.browse": "មើលម៉ឺនុយ",
@@ -157,6 +191,9 @@ export const dictionaries = {
         "order.error.phoneMissing": "សូមបញ្ចូលលេខទូរស័ព្ទរបស់អ្នក",
         "order.error.phoneInvalid": "សូមបញ្ចូលលេខទូរស័ព្ទឱ្យបានត្រឹមត្រូវ",
         "order.error.email": "សូមបញ្ចូលអាសយដ្ឋានអ៊ីមែលឱ្យបានត្រឹមត្រូវ",
+        "order.pickup": "ម៉ោងមកយក",
+        "order.pickupAsap": "ឱ្យបានឆាប់បំផុត",
+        "order.error.pickup": "ម៉ោងនេះជិតពេកហើយ សូមជ្រើសរើសម៉ោងផ្សេង",
 
         "confirmation.thanks": "សូមអរគុណ {name}!",
         "confirmation.number": "ការបញ្ជាទិញ #{number}",
@@ -183,6 +220,31 @@ export const dictionaries = {
         "loyalty.earned": "+{earned} ពិន្ទុ · ឥឡូវអ្នកមាន {balance} ពិន្ទុ",
         "loyalty.rewardReady": "អ្នកទទួលបានភេសជ្ជៈឥតគិតថ្លៃ! ប្រើវានៅការបញ្ជាទិញលើកក្រោយ។",
         "loyalty.balance": "អ្នកមាន {points} ពិន្ទុ",
+
+        "promo.label": "លេខកូដបញ្ចុះតម្លៃ",
+        "promo.apply": "ប្រើ",
+        "promo.remove": "ដកចេញ",
+        "promo.removeLabel": "ដកលេខកូដបញ្ចុះតម្លៃ {code} ចេញ",
+        "promo.applied": "បានប្រើ {code}",
+        "promo.line": "បញ្ចុះតម្លៃ {code}",
+        "promo.error.empty": "សូមបញ្ចូលលេខកូដបញ្ចុះតម្លៃ",
+        "promo.error.unknown": "លេខកូដនេះមិនត្រឹមត្រូវទេ",
+        "promo.error.minimum": "{code} ត្រូវការការបញ្ជាទិញចាប់ពី {minimum} ឡើងទៅ",
+
+        "pickup.asap": "មកយកឱ្យបានឆាប់បំផុត",
+        "pickup.at": "មកយកនៅម៉ោង {time}",
+
+        "status.label": "ស្ថានភាពការបញ្ជាទិញ",
+        "status.received": "បានទទួល",
+        "status.preparing": "កំពុងរៀបចំ",
+        "status.ready": "រួចរាល់",
+        "status.receivedText": "យើងបានទទួលការបញ្ជាទិញរបស់អ្នកហើយ។ នឹងរួចរាល់ប្រហែលម៉ោង {time}។",
+        "status.preparingText": "យើងកំពុងរៀបចំការបញ្ជាទិញរបស់អ្នក។ នឹងរួចរាល់ប្រហែលម៉ោង {time}។",
+        "status.readyText": "ការបញ្ជាទិញរបស់អ្នករួចរាល់ហើយ សូមអញ្ជើញមកយក!",
+        "status.notify": "ជូនដំណឹងខ្ញុំពេលរួចរាល់",
+        "status.notifyOn": "យើងនឹងជូនដំណឹងអ្នកពេលវារួចរាល់។",
+        "status.notificationTitle": "ការបញ្ជាទិញ #{number} រួចរាល់ហើយ",
+        "status.notificationBody": "សូមអញ្ជើញមកយកនៅបញ្ជរ។",
 
         "footer.rights": "រក្សាសិទ្ធិគ្រប់យ៉ាង។",
 
@@ -230,9 +292,16 @@ export function localized(item, field = "name") {
     return item.translations?.[current]?.[field] ?? item[field];
 }
 
+function locale() {
+    return current == "km" ? "km-KH" : "en-US";
+}
+
 export function formatDate(date) {
-    return new Intl.DateTimeFormat(current == "km" ? "km-KH" : "en-US",
-        { dateStyle: "medium", timeStyle: "short" }).format(date);
+    return new Intl.DateTimeFormat(locale(), { dateStyle: "medium", timeStyle: "short" }).format(date);
+}
+
+export function formatTime(date) {
+    return new Intl.DateTimeFormat(locale(), { timeStyle: "short" }).format(date);
 }
 
 // Fills elements marked with data-i18n (text), data-i18n-label (aria-label)

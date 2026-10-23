@@ -18,6 +18,9 @@ export default class CartItem extends HTMLElement {
         this.querySelector(".thumb").src = `/data/images/${item.product.image}`;
         this.querySelector(".name").textContent = name;
         this.querySelector(".options").textContent = describeOptions(item.product, item.options);
+        const note = this.querySelector(".note");
+        note.textContent = item.note ? t("item.note", { note: item.note }) : "";
+        note.hidden = !item.note;
         this.querySelector(".price").textContent = formatPrice(item.unitPrice);
 
         const decrease = this.querySelector("button.decrease");

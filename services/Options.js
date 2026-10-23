@@ -35,9 +35,20 @@ export function unitPrice(product, options) {
     return roundCents(price);
 }
 
-// Identifies a cart line: the same product with the same choices
-export function itemKey(product, options) {
-    return [product.id, ...nonDefaultChoices(product, options).map(([g, c]) => `${g}=${c}`)].join("|");
+// Identifies a cart line: the same product with the same choices and note.
+// The note comes last, so whatever it contains can't look like a choice.
+export function itemKey(product, options, note = "") {
+    return [
+        product.id,
+        ...nonDefaultChoices(product, options).map(([g, c]) => `${g}=${c}`),
+        ...(note ? [`note=${note}`] : []),
+    ].join("|");
+}
+
+export const NOTE_MAX_LENGTH = 60;
+
+export function cleanNote(note = "") {
+    return note.trim().slice(0, NOTE_MAX_LENGTH);
 }
 
 // e.g. "Size: Large · Milk: Oat"; empty when every choice is the default
@@ -47,24 +58,28 @@ export function describeOptions(product, options) {
         .join(" · ");
 }
 
-export function createItem(product, options, quantity = 1) {
+export function createItem(product, options, quantity = 1, note = "") {
     const resolved = resolveOptions(product, options);
+    const cleaned = cleanNote(note);
     return {
-        key: itemKey(product, resolved),
+        key: itemKey(product, resolved, cleaned),
         product,
         options: resolved,
+        note: cleaned,
         unitPrice: unitPrice(product, resolved),
         quantity,
     };
 }
 
-// Upgrades cart items saved before options existed ({ product, quantity })
+// Upgrades cart items saved before options or notes existed ({ product, quantity })
 export function normalizeItem(item) {
     const options = resolveOptions(item.product, item.options);
+    const note = typeof item.note == "string" ? item.note : "";
     return {
         ...item,
         options,
-        key: item.key ?? itemKey(item.product, options),
+        note,
+        key: item.key ?? itemKey(item.product, options, note),
         unitPrice: item.unitPrice ?? unitPrice(item.product, options),
     };
 }

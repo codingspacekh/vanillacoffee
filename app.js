@@ -3,6 +3,7 @@ import { loadData } from './services/Menu.js';
 import Router from './services/Router.js';
 import { getLanguage, setLanguage, t, translateDocument } from './services/I18n.js';
 import { getTheme, setTheme } from './services/Theme.js';
+import { watchLastOrder } from './services/Pickup.js';
 
 // Link my Web Components (each module defines its custom element)
 import './components/MenuPage.js';
@@ -34,7 +35,10 @@ window.addEventListener("DOMContentLoaded", () => {
     });
     app.router.init();
     updateBadge(); // The cart may have been restored from storage
+    watchLastOrder(); // An order placed before a reload may not be ready yet
 });
+
+window.addEventListener("applastorderchange", watchLastOrder);
 
 function updateBadge() {
     const badge = document.getElementById("badge");
