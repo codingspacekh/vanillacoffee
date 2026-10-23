@@ -23,9 +23,12 @@ const Router = {
             Router.go(event.state?.route ?? location.pathname, false);
         });
 
-        // Check the initial URL, recording it on the current history entry
-        history.replaceState({ route: location.pathname }, '', location.pathname + location.search);
-        Router.go(location.pathname, false);
+        // Check the initial URL, recording it on the current history entry.
+        // Live Server and other static hosts open the app as /index.html,
+        // which is the menu.
+        const route = location.pathname.replace(/\/index\.html$/, "/");
+        history.replaceState({ route }, '', route + location.search);
+        Router.go(route, false);
     },
 
     go: (route, addToHistory=true) => {

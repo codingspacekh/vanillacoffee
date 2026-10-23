@@ -45,3 +45,10 @@ test("an unknown page shows the app's 404, not the server's", async ({ page }) =
     await page.goto(`${HOST}/nope`);
     await expect(page.locator("main")).toHaveText("Oups, 404!");
 });
+
+test("a first visit to /index.html, as Live Server opens it, shows the menu", async ({ page }) => {
+    await page.goto(`${HOST}/index.html`);
+    await expect(page.locator("menu-page product-item").first()).toBeVisible();
+    await expect(page).toHaveURL(`${HOST}/`);
+    await expect(page.locator("#linkHome")).toHaveAttribute("aria-current", "page");
+});
